@@ -1,19 +1,20 @@
 "use client";
-
 import React, { useState } from "react";
-import { Button } from "./ui/button";
-import { FaGoogle } from "react-icons/fa";
+import { Button } from "../ui/button";
+import { signOut } from "next-auth/react";
 import { LuLoaderCircle } from "react-icons/lu";
+import Cookies from "js-cookie";
 
-import { signIn } from "next-auth/react";
-export default function LoginButton() {
+export default function LogoutButton() {
   const [loading, setLoading] = useState(false);
   return (
     <Button
       className="min-w-[120px]"
+      variant={"destructive"}
       onClick={async () => {
         setLoading(true);
-        await signIn("google", { redirectTo: "/dashboard" });
+        await signOut({ redirectTo: "/" });
+        Cookies.remove("id");
         setLoading(false);
       }}
     >
@@ -22,9 +23,7 @@ export default function LoginButton() {
           <LuLoaderCircle className="animate-spin" />
         </>
       ) : (
-        <>
-          <FaGoogle /> Sign In
-        </>
+        <>Sign Out</>
       )}
     </Button>
   );

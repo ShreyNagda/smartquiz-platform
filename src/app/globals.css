@@ -190,13 +190,31 @@
 }
 
 @layer base {
-  * {
+  /* * {
     @apply border-border outline-ring/50;
     scrollbar-color: var(--accent) transparent;
-    /* scrollbar-gutter: stable both-sides; */
+  } */
+
+  *,
+  ::before,
+  ::after {
+    box-sizing: border-box;
   }
+
+  /* Avoid applying border and outline globally to ALL elements */
+  *:where(:not(input, select, textarea, button, dialog)) {
+    @apply border-border outline-ring/50;
+  }
+
   body {
     @apply bg-background text-foreground;
     letter-spacing: var(--tracking-normal);
+    margin: 0 !important;
+    overflow-y: scroll !important;
+    padding-right: 0 !important;
+  }
+
+  option {
+    @apply bg-background;
   }
 }

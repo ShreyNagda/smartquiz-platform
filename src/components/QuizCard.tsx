@@ -1,9 +1,9 @@
+"use client";
 import React from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -24,7 +24,7 @@ interface IQuizCard {
 export default function QuizCard({ q }: { q: IQuizCard }) {
   return (
     <Link href={`/dashboard/quiz/${q._id}`}>
-      <Card>
+      <Card className="bg-card">
         <CardHeader>
           <CardTitle className="flex justify-between">
             {q.title}
@@ -39,14 +39,14 @@ export default function QuizCard({ q }: { q: IQuizCard }) {
               </Tooltip>
             )}
           </CardTitle>
-          <CardDescription>{q.desc}</CardDescription>
+          {/* <CardDescription>{q.desc}</CardDescription> */}
         </CardHeader>
         <CardContent className="flex flex-wrap justify-between items-center">
           <div>Questions: {q.questions.length}</div>
           <div>Responses: {q.responses.length}</div>
         </CardContent>
         <CardFooter>
-          <div className="capitalize">{q.status}</div>
+          <div className="uppercase text-sm text-primary">{q.status}</div>
         </CardFooter>
       </Card>
     </Link>

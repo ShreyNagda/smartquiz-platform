@@ -1,25 +1,50 @@
 // import QuizCard from "@/components/QuizCard";
 
 import QuizCard from "@/components/QuizCard";
+import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
-import Quiz from "@/models/Quiz";
+import dbConnect from "@/lib/db";
+import { getQuizzesByHost } from "@/lib/helpers/quiz";
+import Link from "next/link";
+import { redirect } from "next/navigation";
 import React from "react";
 
+interface IQuiz {
+  _id: string;
+  title: string;
+  desc?: string;
+  questions: object[];
+  responses: object[];
+  status: string;
+}
+
 export default async function DashboardPage() {
+  await dbConnect();
   const session = await auth();
 
-  const quizzes = await Quiz.find({ hostId: session?.user?.id });
+  if (!session?.user?.id) {
+    redirect(`/error/NotSignedIn`);
+  }
+
+  const quizzes = await getQuizzesByHost(session.user.id);
+
+  const serializableQuizzes = JSON.parse(JSON.stringify(quizzes));
+
   return (
-    <div className="h-svh w-full">
+    <div className="h-svh w-full p-2">
       <div className="text-xl underline underline-offset-8">My Quizzes</div>
 
       {quizzes && (
-        <div className="max-w-[400px] md:max-w-3/4 grid grid-cols-1 md:grid-cols-2 gap-1 py-5">
-          {quizzes.map((q, index) => (
-            <QuizCard key={index} q={{ ...q }} />
-          ))}
+        <div className="w-full max-w-[350px] md:max-w-3/4 mx-auto md:m-0 grid grid-cols-1 md:grid-cols-2 gap-2 py-5">
+          {serializableQuizzes.map((q: IQuiz) => {
+            return <QuizCard key={q._id} q={q} />;
+          })}
         </div>
       )}
+      {/* <AddQuizButton /> */}
+      <Button asChild>
+        <Link href={`dashboard/quiz/new`}>Create Quiz</Link>
+      </Button>
     </div>
   );
 }

@@ -3,6 +3,8 @@ import { Schema, models, model } from "mongoose";
 export interface IQuiz {
   _id: Schema.Types.ObjectId;
   title: string;
+  access?: string;
+  accessMode: "public" | "private";
   desc?: string;
   subject?: string;
   hostId: Schema.Types.ObjectId;
@@ -15,12 +17,14 @@ export interface IQuiz {
   }[];
   questions: {
     qid: string;
+    type: "single" | "multiple" | "short";
     text: string;
-    options: string[];
-    correct: string;
+    options?: string[];
+    correct?: string[] | string;
   }[];
   userDetailsRequired: boolean;
   randomizeQuestions: boolean;
+  timeMode: "manual" | "automatic";
   timeLimit: number;
   startsAt?: Date;
   endsAt?: Date;
@@ -31,6 +35,15 @@ const quizSchema = new Schema<IQuiz>(
   {
     title: { type: String, required: true },
     desc: String,
+    accessMode: {
+      type: String,
+      enum: ["public", "private"],
+      required: true,
+      default: "private",
+    },
+    access: {
+      type: String,
+    },
     subject: String,
     hostId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     responses: [
@@ -46,13 +59,23 @@ const quizSchema = new Schema<IQuiz>(
       {
         qid: String,
         text: String,
+        type: {
+          type: String,
+          enum: ["single", "multiple", "short"],
+          default: "single",
+        },
         options: [String],
-        correct: String,
+        correct: [String],
       },
     ],
     timeLimit: Number,
     userDetailsRequired: { type: Boolean, default: true },
     randomizeQuestions: { type: Boolean, default: false },
+    timeMode: {
+      type: String,
+      enum: ["manual", "automatic"],
+      default: "manual",
+    },
     startsAt: Date,
     endsAt: Date,
     status: {

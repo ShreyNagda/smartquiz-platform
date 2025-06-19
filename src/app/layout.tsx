@@ -23,14 +23,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`dark antialiased ${geistMono.className} h-svh flex flex-col p-4 mx-auto`}
+        className={`dark antialiased ${geistMono.className} h-svh flex flex-col`}
       >
         <Header />
-        <main className="flex-grow flex flex-col justify-center items-center relative">
+        <main className="flex-grow flex flex-col justify-center items-center overflow-x-hidden">
           {children}
         </main>
-        <Toaster richColors closeButton duration={200} />
         <Footer />
+        <Toaster richColors closeButton duration={1000} />
       </body>
     </html>
   );
