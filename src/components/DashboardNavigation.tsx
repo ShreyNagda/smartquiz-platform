@@ -11,8 +11,11 @@ import {
   SheetFooter,
   Sheet,
 } from "./ui/sheet";
+import { toast } from "sonner";
+import { LuLoader } from "react-icons/lu";
 
-export default function DashboardNavigation() {
+export default function DashboardNavigation({ id }: { id: string }) {
+  const [loading, setLoading] = useState(false);
   const [sheetState, setSheetState] = useState(false);
 
   const tabs = [
@@ -23,6 +26,17 @@ export default function DashboardNavigation() {
     { title: "Responses", value: "responses" },
   ];
 
+  const activateQuiz = async () => {
+    setLoading(true);
+    const res = await fetch(`/api/quiz/${id}`);
+    await new Promise((res) => setTimeout(res, 500));
+    const { status, message } = await res.json();
+    if (status == 200) {
+      toast.success(message);
+    }
+    setLoading(false);
+  };
+
   return (
     <>
       <TabsList className="hidden md:flex gap-4 mb-4">
@@ -31,7 +45,9 @@ export default function DashboardNavigation() {
             {tab.title}
           </TabsTrigger>
         ))}
-        <Button>Activate Quiz</Button>
+        <Button onClick={activateQuiz}>
+          {loading ? <LuLoader className="animate-spin" /> : "Activate Quiz"}
+        </Button>
       </TabsList>
 
       {/* Mobile Sheet Menu */}
@@ -59,7 +75,13 @@ export default function DashboardNavigation() {
               ))}
             </TabsList>
             <SheetFooter>
-              <Button>Activate Quiz</Button>
+              <Button onClick={activateQuiz}>
+                {loading ? (
+                  <LuLoader className="animate-spin" />
+                ) : (
+                  "Activate Quiz"
+                )}
+              </Button>
             </SheetFooter>
           </SheetContent>
         </Sheet>

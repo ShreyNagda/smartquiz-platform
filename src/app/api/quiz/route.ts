@@ -1,7 +1,9 @@
 import Quiz from "@/models/Quiz";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
-  const res = await Quiz.find();
-  return NextResponse.json({ message: "Hello", data: res });
+export async function POST(req: NextRequest) {
+  const body = await req.json();
+  const { id } = body;
+  const res = await Quiz.findOne({ _id: id });
+  return NextResponse.json(JSON.parse(JSON.stringify(res)));
 }

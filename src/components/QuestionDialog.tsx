@@ -20,7 +20,7 @@ import { Checkbox } from "./ui/checkbox";
 import { Input } from "./ui/input";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Label } from "./ui/label";
-import { FaInfo } from "react-icons/fa";
+import { FaInfo, FaPlus, FaMinus } from "react-icons/fa";
 
 type Question = {
   qid: string;
@@ -50,7 +50,7 @@ export default function QuestionDialog({
           text: "",
           type: "single",
           options: ["", ""],
-          correct: "",
+          correct: undefined,
         };
   });
 
@@ -167,10 +167,15 @@ export default function QuestionDialog({
         {children ? (
           children
         ) : (
-          <Button variant={"secondary"}>Add Question</Button>
+          <div>
+            <Button variant={"secondary"}>
+              <FaPlus />{" "}
+              <div className="hidden md:block text-sm">Add Question</div>
+            </Button>
+          </div>
         )}
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="p-2 w-[95vw]">
         <DialogTitle>Add Question</DialogTitle>
         <form className="space-y-4" onSubmit={handleSubmit}>
           {error && (
@@ -185,9 +190,10 @@ export default function QuestionDialog({
             onChange={(ev) =>
               setQData((prev) => ({ ...prev, text: ev.target.value }))
             }
+            className="rounded-sm"
           />
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col md:flex-row items-center gap-2">
             <Label>Question Type:</Label>
             <Select
               defaultValue={qData.type}
@@ -200,7 +206,7 @@ export default function QuestionDialog({
                 }));
               }}
             >
-              <SelectTrigger className="w-[200px] border">
+              <SelectTrigger className="border text-sm md:text-base px-1 py-1">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="z-50">
@@ -213,6 +219,7 @@ export default function QuestionDialog({
 
           {qData.type === "short" ? (
             <Textarea
+              className="rounded-sm"
               placeholder="Sample short answer"
               onChange={(ev) =>
                 setQData((prev) => ({ ...prev, correct: ev.target.value }))
@@ -243,21 +250,23 @@ export default function QuestionDialog({
                     />
                   )}
                   <Input
-                    className="w-full"
+                    className="w-full rounded-sm"
                     value={opt}
                     placeholder={`Option ${idx + 1}`}
                     onChange={(e) => updateOption(idx, e.target.value)}
                   />
-                  {qData.options && qData.options.length > 2 && (
+                  {
                     <Button
                       type="button"
                       variant="destructive"
                       size="sm"
+                      disabled={qData.options && qData.options.length <= 2}
                       onClick={() => handleRemoveOption(idx)}
                     >
-                      Remove
+                      <FaMinus />
+                      <div className="hidden md:inline-block">Remove</div>
                     </Button>
-                  )}
+                  }
                 </div>
               ))}
               {qData.options && qData.options.length < 4 && (

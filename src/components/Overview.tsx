@@ -3,12 +3,14 @@ import { Card, CardContent } from "./ui/card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { Button } from "./ui/button";
 import { BsPrinter } from "react-icons/bs";
+import Link from "next/link";
 
 type OverviewData = {
   numberOfQuestions: number;
   numberOfResponses: number;
   accessMode: string;
   access: string;
+  id: string;
 };
 
 export default function Overview(overviewData: OverviewData) {
@@ -17,7 +19,6 @@ export default function Overview(overviewData: OverviewData) {
     { title: "Responses", value: overviewData.numberOfResponses },
   ];
 
-  console.log(process.env.BASE_URL);
   return (
     <>
       <div className="flex justify-between items-center">
@@ -36,34 +37,29 @@ export default function Overview(overviewData: OverviewData) {
           </Tooltip>
         </div>
       </div>
-      <div className="flex gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         {data.map((d) => (
           <Card key={d.title} className="flex-1 bg-card">
-            <CardContent className="flex justify-between items-center">
+            <CardContent className="flex flex-col md:flex-row justify-between items-center md:text-xl">
               <div>{d.title}</div>
-              <div>{d.value}</div>
+              <div className="text-xl">{d.value}</div>
             </CardContent>
           </Card>
         ))}
-        {/* <Card className="flex-1 bg-card">
-        <CardContent className="flex justify-between items-center">
-          <div>Questions</div>
-          <div>{data.questions.length}</div>
-        </CardContent>
-      </Card>
-      <Card className="flex-1">
-        <CardContent>
-          <CardContent className="flex justify-between items-center">
-            <div>Responses</div>
-            <div>{quizData.responses.length}</div>
-          </CardContent>
-        </CardContent>
-      </Card> */}
       </div>
-      <div>
-        <div>Access Mode: {overviewData.accessMode}</div>
-        <div>Access : {overviewData.access}</div>
+      <div className="py-1">
+        <div className="inline-flex">
+          Access Mode:{" "}
+          <p className="capitalize">&nbsp;{overviewData.accessMode}</p>
+        </div>
+        <div className="flex-wrap">
+          <p className="min-w-[200px] truncate">{overviewData.access}</p>
+        </div>
       </div>
+
+      <Button type="button" variant={"link"}>
+        <Link href={`${overviewData.id}/preview`}>Preview</Link>
+      </Button>
     </>
   );
 }

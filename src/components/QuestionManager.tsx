@@ -2,8 +2,17 @@
 import React, { useState } from "react";
 import QuestionDialog from "./QuestionDialog";
 import { Button } from "./ui/button";
-import { LuLoader } from "react-icons/lu";
 import { MdEdit } from "react-icons/md";
+import { LuLoader } from "react-icons/lu";
+
+import { RiAiGenerate2 } from "react-icons/ri";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
 
 type Question = {
   qid: string;
@@ -50,10 +59,26 @@ export default function QuestionManager({ initialQuestions, setData }: Props) {
   };
 
   return (
-    <div className="flex flex-col items-start ">
+    <div className="flex flex-col items-start p-2">
       <div className="w-full flex justify-between items-center">
         <div className="text-lg my-2 font-semibold">Question Manager</div>
-        <QuestionDialog handleAddQuestion={handleAddQuestion} />
+        <div className="flex md:flex-row  gap-2 items-center p-2">
+          <QuestionDialog handleAddQuestion={handleAddQuestion} />
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button type="button" variant={"outline"} className="text-sm">
+                <div className="hidden md:inline-block">AI generate</div>
+                <RiAiGenerate2 />
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogTitle>Coming Soon</DialogTitle>
+              <DialogDescription>
+                This feature is under development
+              </DialogDescription>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       <div className="space-y-2 w-full">
@@ -85,7 +110,7 @@ export default function QuestionManager({ initialQuestions, setData }: Props) {
             {loading ? (
               <LuLoader className="animate-spin h-5 w-5" />
             ) : (
-              "Save All Questions"
+              `Save ${initialQuestions === questions ? "All" : ""} Questions`
             )}
           </Button>
         ) : (

@@ -75,7 +75,7 @@ export default async function QuizConfigPage({
         defaultValue="overview"
         className="flex-col md:flex-row h-full w-full"
       >
-        <DashboardNavigation />
+        <DashboardNavigation id={id} />
 
         {/* Tab Content */}
         <div className="flex-grow w-full">
@@ -85,6 +85,7 @@ export default async function QuizConfigPage({
               numberOfResponses={quizData.responses.length || 0}
               accessMode={quizData.accessMode}
               access={quizData.access || ""}
+              id={id}
             />
           </TabsContent>
           <TabsContent value="basic" className="p-3">
