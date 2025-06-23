@@ -75,7 +75,7 @@ export default async function QuizConfigPage({
         defaultValue="overview"
         className="flex-col md:flex-row h-full w-full"
       >
-        <DashboardNavigation id={id} />
+        <DashboardNavigation id={id} status={quizData.status} />
 
         {/* Tab Content */}
         <div className="flex-grow w-full">

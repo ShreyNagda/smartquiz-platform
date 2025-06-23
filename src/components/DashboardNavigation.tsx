@@ -13,8 +13,16 @@ import {
 } from "./ui/sheet";
 import { toast } from "sonner";
 import { LuLoader } from "react-icons/lu";
+import { redirect } from "next/navigation";
+import BackButton from "./Buttons/BackButton";
 
-export default function DashboardNavigation({ id }: { id: string }) {
+export default function DashboardNavigation({
+  id,
+  status,
+}: {
+  id: string;
+  status: string;
+}) {
   const [loading, setLoading] = useState(false);
   const [sheetState, setSheetState] = useState(false);
 
@@ -28,25 +36,48 @@ export default function DashboardNavigation({ id }: { id: string }) {
 
   const activateQuiz = async () => {
     setLoading(true);
-    const res = await fetch(`/api/quiz/${id}`);
+    const res = await fetch(`/api/quiz/${id}/activate`);
     await new Promise((res) => setTimeout(res, 500));
     const { status, message } = await res.json();
     if (status == 200) {
       toast.success(message);
     }
     setLoading(false);
+    redirect("");
+  };
+
+  const deactivateQuiz = async () => {
+    setLoading(true);
+    const res = await fetch(`/api/quiz/${id}/deactivate`);
+    await new Promise((res) => setTimeout(res, 500));
+    const { status, message } = await res.json();
+    if (status == 200) {
+      toast.success(message);
+    }
+    setLoading(false);
+    redirect("");
   };
 
   return (
     <>
       <TabsList className="hidden md:flex gap-4 mb-4">
+        <BackButton />
         {tabs.map((tab) => (
           <TabsTrigger value={tab.value} key={tab.value}>
             {tab.title}
           </TabsTrigger>
         ))}
-        <Button onClick={activateQuiz}>
-          {loading ? <LuLoader className="animate-spin" /> : "Activate Quiz"}
+        <Button
+          className="w-[150px]"
+          onClick={status === "live" ? deactivateQuiz : activateQuiz}
+        >
+          {loading ? (
+            <LuLoader className="animate-spin" />
+          ) : status !== "live" ? (
+            "Activate Quiz"
+          ) : (
+            "Close Quiz"
+          )}
         </Button>
       </TabsList>
 
@@ -64,6 +95,7 @@ export default function DashboardNavigation({ id }: { id: string }) {
               Quiz Settings
             </SheetTitle>
             <TabsList className="flex flex-col items-start space-y-2">
+              <BackButton />
               {tabs.map((tab) => (
                 <TabsTrigger
                   value={tab.value}
@@ -75,11 +107,16 @@ export default function DashboardNavigation({ id }: { id: string }) {
               ))}
             </TabsList>
             <SheetFooter>
-              <Button onClick={activateQuiz}>
+              <Button
+                className="w-[150px]"
+                onClick={status === "live" ? deactivateQuiz : activateQuiz}
+              >
                 {loading ? (
                   <LuLoader className="animate-spin" />
-                ) : (
+                ) : status !== "live" ? (
                   "Activate Quiz"
+                ) : (
+                  "Close Quiz"
                 )}
               </Button>
             </SheetFooter>
