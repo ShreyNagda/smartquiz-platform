@@ -10,6 +10,7 @@ type OverviewData = {
   numberOfResponses: number;
   accessMode: string;
   access: string;
+  code?: string;
   id: string;
 };
 
@@ -48,16 +49,16 @@ export default function Overview(overviewData: OverviewData) {
         ))}
       </div>
       <div className="py-1">
-        <div className="inline-flex">
-          Access Mode:{" "}
-          <p className="capitalize">&nbsp;{overviewData.accessMode}</p>
-        </div>
+        <p className="capitalize"> Access Mode: {overviewData.accessMode}</p>
+        {overviewData.accessMode === "private" && (
+          <p>Code: {overviewData.code!}</p>
+        )}
         <div className="flex-wrap">
-          <p className="min-w-[200px] truncate">{overviewData.access}</p>
+          <p className="min-w-[200px] truncate">URL: {overviewData.access}</p>
         </div>
       </div>
 
-      <Button type="button" variant={"link"}>
+      <Button type="button" variant={"link"} className="hidden md:flex">
         <Link href={`${overviewData.id}/preview`}>Preview</Link>
       </Button>
     </>

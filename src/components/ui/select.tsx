@@ -37,7 +37,7 @@ function SelectTrigger({
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        "flex items-center justify-between border focus:outline-primary",
+        "flex items-center justify-between border focus:outline-primary px-2 py-1 rounded-xs",
         className
       )}
       {...props}

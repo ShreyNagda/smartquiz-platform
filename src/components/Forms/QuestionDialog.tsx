@@ -3,24 +3,25 @@ import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogTitle,
   DialogTrigger,
-} from "./ui/dialog";
-import { Button } from "./ui/button";
-import { Textarea } from "./ui/textarea";
+} from "../ui/dialog";
+import { Button } from "../ui/button";
+import { Textarea } from "../ui/textarea";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./ui/select";
-import { Checkbox } from "./ui/checkbox";
-import { Input } from "./ui/input";
-import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
-import { Label } from "./ui/label";
-import { FaInfo, FaPlus, FaMinus } from "react-icons/fa";
+} from "../ui/select";
+import { Checkbox } from "../ui/checkbox";
+import { Input } from "../ui/input";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { Label } from "../ui/label";
+import { FaInfo, FaMinus } from "react-icons/fa";
 
 type Question = {
   qid: string;
@@ -28,12 +29,13 @@ type Question = {
   text: string;
   options?: string[];
   correct?: string[] | string;
+  marks?: number;
 };
 
 type Props = {
   initialQuestion?: Question;
   handleAddQuestion: (data: Question) => void;
-  children?: React.ReactNode;
+  children: React.ReactNode;
 };
 
 export default function QuestionDialog({
@@ -51,6 +53,7 @@ export default function QuestionDialog({
           type: "single",
           options: ["", ""],
           correct: undefined,
+          marks: 0,
         };
   });
 
@@ -65,11 +68,6 @@ export default function QuestionDialog({
       return;
     }
 
-    const hasDuplicates = (arr: string[]) => new Set(arr).size !== arr.length;
-    if (hasDuplicates(qData.options!)) {
-      setError("Duplicate options");
-      return;
-    }
     // if(qData.options.)
 
     if (qData.type === "short") {
@@ -81,6 +79,11 @@ export default function QuestionDialog({
         return;
       }
     } else {
+      const hasDuplicates = (arr: string[]) => new Set(arr).size !== arr.length;
+      if (hasDuplicates(qData.options!)) {
+        setError("Duplicate options");
+        return;
+      }
       const filledOptions = (qData.options || []).filter(
         (opt) => opt.trim() !== ""
       );
@@ -107,7 +110,13 @@ export default function QuestionDialog({
       }
     }
 
+    if (qData.marks === undefined || qData.marks <= 0) {
+      setError("Marks cannot be 0");
+      return;
+    }
+
     // If all validations pass
+    console.log(qData);
     handleAddQuestion(qData);
     setIsOpen(false);
   };
@@ -163,20 +172,10 @@ export default function QuestionDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        {children ? (
-          children
-        ) : (
-          <div>
-            <Button variant={"secondary"}>
-              <FaPlus />{" "}
-              <div className="hidden md:block text-sm">Add Question</div>
-            </Button>
-          </div>
-        )}
-      </DialogTrigger>
-      <DialogContent className="p-2 w-[95vw]">
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent className="p-2 text-sm md:text-sm">
         <DialogTitle>Add Question</DialogTitle>
+        <DialogDescription>Fill all the fields</DialogDescription>
         <form className="space-y-4" onSubmit={handleSubmit}>
           {error && (
             <div className="flex gap-2 items-center text-red-400">
@@ -190,7 +189,6 @@ export default function QuestionDialog({
             onChange={(ev) =>
               setQData((prev) => ({ ...prev, text: ev.target.value }))
             }
-            className="rounded-sm"
           />
 
           <div className="flex flex-col md:flex-row items-center gap-2">
@@ -219,11 +217,11 @@ export default function QuestionDialog({
 
           {qData.type === "short" ? (
             <Textarea
-              className="rounded-sm"
               placeholder="Sample short answer"
               onChange={(ev) =>
                 setQData((prev) => ({ ...prev, correct: ev.target.value }))
               }
+              value={qData.correct}
             />
           ) : (
             <div className="space-y-2">
@@ -232,7 +230,7 @@ export default function QuestionDialog({
                   {qData.type === "single" ? (
                     <RadioGroup
                       value={qData.correct as string}
-                      onValueChange={(val) => toggleCorrect(val)}
+                      onValueChange={(value) => toggleCorrect(value)}
                     >
                       <RadioGroupItem
                         value={opt}
@@ -250,7 +248,7 @@ export default function QuestionDialog({
                     />
                   )}
                   <Input
-                    className="w-full rounded-sm"
+                    className="w-full"
                     value={opt}
                     placeholder={`Option ${idx + 1}`}
                     onChange={(e) => updateOption(idx, e.target.value)}
@@ -280,6 +278,17 @@ export default function QuestionDialog({
               )}
             </div>
           )}
+
+          <Input
+            type="number"
+            placeholder="Enter marks for this question"
+            min={-1}
+            value={qData.marks}
+            onChange={(ev) =>
+              setQData((prev) => ({ ...prev, marks: Number(ev.target.value) }))
+            }
+          />
+
           <DialogFooter>
             <Button
               type="button"

@@ -12,10 +12,10 @@ import {
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 
 import DashboardNavigation from "@/components/DashboardNavigation";
-import BasicQuizForm from "@/components/BasicQuizForm";
-import TimeQuizForm from "@/components/TimeQuizForm";
+import BasicQuizForm from "@/components/Forms/BasicQuizForm";
+import TimeQuizForm from "@/components/Forms/TimeQuizForm";
 import Overview from "@/components/Overview";
-import QuestionManager from "@/components/QuestionManager";
+import QuestionManager from "@/components/Forms/QuestionManager";
 import { redirect } from "next/navigation";
 
 // type IQuiz = {};
@@ -44,15 +44,21 @@ export default async function QuizConfigPage({
     userDetailsRequired?: boolean;
     accessMode: string;
     access: string;
+    code?: string;
   }) => {
     "use server";
-    await updateQuizBasic({ ...data, _id: id });
+    try {
+      await updateQuizBasic({ ...data, code: data.code, _id: id });
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
   };
 
   const setTimeData = async (data: { timeMode: string; timeLimit: number }) => {
     "use server";
     await updateQuizTime({ ...data, _id: id });
-    // await updateQuizBasic({ ...data, _id: id });
   };
 
   const setQuestionData = async (
@@ -62,11 +68,11 @@ export default async function QuizConfigPage({
       text: string;
       options?: string[];
       correct?: string[] | string;
+      marks?: number;
     }[]
   ) => {
     "use server";
-    console.log(data);
-    updateQuizQuestions({ _id: id, questions: data });
+    await updateQuizQuestions({ _id: id, questions: data });
   };
 
   return (
@@ -85,6 +91,7 @@ export default async function QuizConfigPage({
               numberOfResponses={quizData.responses.length || 0}
               accessMode={quizData.accessMode}
               access={quizData.access || ""}
+              code={quizData.code || ""}
               id={id}
             />
           </TabsContent>
@@ -97,6 +104,7 @@ export default async function QuizConfigPage({
                 userDetailsRequired: quizData.userDetailsRequired,
                 accessMode: quizData.accessMode,
                 access: quizData.access!,
+                code: quizData.code!,
               }}
               _id={id}
               setData={setBasicData}
@@ -115,7 +123,7 @@ export default async function QuizConfigPage({
             <TimeQuizForm
               initialTimeData={{
                 timeMode: quizData.timeMode,
-                timeLimit: quizData.timeLimit,
+                timeLimit: quizData.timeLimit || 20,
               }}
               setData={setTimeData}
             />

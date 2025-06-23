@@ -16,5 +16,13 @@ export default async function QuizPage({
     redirect("/error/quiz-not-found");
   }
 
-  return <div className="w-full">Preview</div>;
+  return (
+    <>
+      <div className="text-left w-full p-4 text-lg">Preview</div>
+      <iframe
+        className="h-[500px] w-full border p-2 pointer-events-none"
+        src={`${process.env.NEXT_PUBLIC_BASE_URL}/quiz/${id}`}
+      ></iframe>
+    </>
+  );
 }

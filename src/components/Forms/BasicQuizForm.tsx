@@ -1,10 +1,10 @@
 "use client";
 import React, { ChangeEvent, useState } from "react";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
-import { Textarea } from "./ui/textarea";
-import { Label } from "./ui/label";
-import { Switch } from "./ui/switch";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import { Textarea } from "../ui/textarea";
+import { Label } from "../ui/label";
+import { Switch } from "../ui/switch";
 import { LuLoader } from "react-icons/lu";
 import {
   Select,
@@ -12,7 +12,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./ui/select";
+} from "../ui/select";
 import { Copy } from "lucide-react";
 import { toast } from "sonner";
 
@@ -23,6 +23,7 @@ type Data = {
   access: string;
   randomizeQuestions?: boolean;
   userDetailsRequired?: boolean;
+  code: string;
 };
 
 type Props = {
@@ -42,6 +43,7 @@ export default function BasicQuizForm({
       desc: "",
       accessMode: "private",
       access: "",
+      code: "",
     }
   );
   const [loading, setLoading] = useState(false);
@@ -99,7 +101,11 @@ export default function BasicQuizForm({
                 if (value === "public") {
                   handleChange("access", url);
                 } else {
-                  handleChange("access", quizData.access!);
+                  handleChange(
+                    "code",
+                    quizData.code ||
+                      Math.random().toString(36).substring(2, 8).toUpperCase()
+                  );
                 }
               }}
             >
@@ -112,27 +118,9 @@ export default function BasicQuizForm({
               </SelectContent>
             </Select>
             <div className="flex items-center">
-              {quizData.accessMode === "public" ? (
+              {quizData.accessMode === "private" && (
                 <>
-                  {_id !== undefined && (
-                    <>
-                      {url}
-                      <Button
-                        variant="link"
-                        type="button"
-                        onClick={() => {
-                          navigator.clipboard.writeText(url);
-                          toast.success("Quiz link copied to clipboard");
-                        }}
-                      >
-                        <Copy />
-                      </Button>
-                    </>
-                  )}
-                </>
-              ) : (
-                <>
-                  {quizData.access}
+                  Code: {quizData.code}
                   <Button
                     variant="link"
                     type="button"
@@ -171,7 +159,11 @@ export default function BasicQuizForm({
           </div>
         </div>
 
-        <Button type="submit" disabled={loading} className="min-w-[150px]">
+        <Button
+          type="submit"
+          disabled={loading || initialQuizData === quizData}
+          className="min-w-[150px]"
+        >
           {loading ? (
             <LuLoader className="animate-spin h-5 w-5" />
           ) : initialQuizData ? (

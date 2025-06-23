@@ -4,6 +4,7 @@ export interface IQuiz {
   _id: Schema.Types.ObjectId;
   title: string;
   access?: string;
+  code?: string;
   accessMode: "public" | "private";
   desc?: string;
   subject?: string;
@@ -21,6 +22,7 @@ export interface IQuiz {
     text: string;
     options?: string[];
     correct?: string[] | string;
+    marks?: number;
   }[];
   userDetailsRequired: boolean;
   randomizeQuestions: boolean;
@@ -44,6 +46,15 @@ const quizSchema = new Schema<IQuiz>(
     access: {
       type: String,
     },
+    code: {
+      type: String,
+      unique: true,
+      minlength: 6,
+      maxlength: 6,
+      required: function () {
+        return this.accessMode === "private";
+      },
+    },
     subject: String,
     hostId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     responses: [
@@ -65,7 +76,11 @@ const quizSchema = new Schema<IQuiz>(
           default: "single",
         },
         options: [String],
-        correct: [String],
+        correct: {
+          type: Schema.Types.Mixed,
+          required: true,
+        },
+        marks: Number,
       },
     ],
     timeLimit: Number,

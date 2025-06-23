@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import QuestionDialog from "./QuestionDialog";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { MdEdit } from "react-icons/md";
 import { LuLoader } from "react-icons/lu";
 
@@ -12,7 +12,8 @@ import {
   DialogDescription,
   DialogTitle,
   DialogTrigger,
-} from "./ui/dialog";
+} from "../ui/dialog";
+import { FaPlus } from "react-icons/fa";
 
 type Question = {
   qid: string;
@@ -20,6 +21,7 @@ type Question = {
   text: string;
   options?: string[];
   correct?: string[] | string;
+  marks?: number;
 };
 
 type Props = {
@@ -30,6 +32,11 @@ type Props = {
 export default function QuestionManager({ initialQuestions, setData }: Props) {
   const [questions, setQuestions] = useState<Question[]>(initialQuestions);
   const [loading, setLoading] = useState(false);
+  // useEffect(() => {
+  //   if (initialQuestions !== questions) {
+  //     alert("Unsaved changes");
+  //   }
+  // }, [initialQuestions, questions]);
 
   const handleAddQuestion = (data: {
     qid: string;
@@ -37,6 +44,7 @@ export default function QuestionManager({ initialQuestions, setData }: Props) {
     text: string;
     options?: string[];
     correct?: string[] | string;
+    marks?: number;
   }) => {
     setQuestions((prev) => {
       const exists = prev.find((q) => q.qid === data.qid);
@@ -63,7 +71,12 @@ export default function QuestionManager({ initialQuestions, setData }: Props) {
       <div className="w-full flex justify-between items-center">
         <div className="text-lg my-2 font-semibold">Question Manager</div>
         <div className="flex md:flex-row  gap-2 items-center p-2">
-          <QuestionDialog handleAddQuestion={handleAddQuestion} />
+          <QuestionDialog handleAddQuestion={handleAddQuestion}>
+            <Button variant={"secondary"}>
+              <FaPlus />
+              <div className="hidden md:block text-sm">Add Question</div>
+            </Button>
+          </QuestionDialog>
           <Dialog>
             <DialogTrigger asChild>
               <Button type="button" variant={"outline"} className="text-sm">
@@ -103,7 +116,7 @@ export default function QuestionManager({ initialQuestions, setData }: Props) {
         {questions.length > 0 ? (
           <Button
             type="submit"
-            disabled={loading}
+            disabled={loading || initialQuestions === questions}
             className="min-w-[150px]"
             onClick={handleSave}
           >

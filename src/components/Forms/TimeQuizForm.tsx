@@ -3,8 +3,15 @@
 import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { LuLoader } from "react-icons/lu";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 type QuizTimeData = {
   timeMode: string;
@@ -50,7 +57,7 @@ export default function TimeQuizForm({ initialTimeData, setData }: Props) {
 
         <div className="flex items-center">
           <Label className="block">Start Mode: </Label>
-          <select
+          {/* <select
             onChange={(ev) => handleChange("timeMode", ev.target.value)}
             defaultValue={timeData.timeMode}
           >
@@ -58,7 +65,21 @@ export default function TimeQuizForm({ initialTimeData, setData }: Props) {
             <option value="auto" disabled>
               Automatic (coming soon)
             </option>
-          </select>
+          </select> */}
+          <Select
+            onValueChange={(value) => handleChange("timeMode", value)}
+            defaultValue={timeData.timeMode}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select Time Mode" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="manual">Manual</SelectItem>
+              <SelectItem value="auto" disabled>
+                Automatic (Coming Soon)
+              </SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         {/* {quizData.timeMode === "auto" && (
@@ -83,13 +104,15 @@ export default function TimeQuizForm({ initialTimeData, setData }: Props) {
             </div>
           </div>
         )} */}
-        <Button type="submit" disabled={loading} className="min-w-[150px]">
+        <Button
+          type="submit"
+          disabled={loading || timeData === initialTimeData}
+          className="min-w-[150px]"
+        >
           {loading ? (
             <LuLoader className="animate-spin h-5 w-5" />
-          ) : initialTimeData ? (
-            "Save Quiz"
           ) : (
-            "Create Quiz"
+            "Save Quiz"
           )}
         </Button>
       </form>

@@ -58,6 +58,10 @@ export default function HeaderActions({ session }: Props) {
   const isPreview = pathname.endsWith("/preview");
 
   const isQuizPage = pathname.startsWith("/quiz");
+
+  if (isQuizPage) {
+    return <></>;
+  }
   return (
     <nav className="w-full flex justify-between gap-2 items-center">
       <Link href={"/"} className="text-2xl font-bold">

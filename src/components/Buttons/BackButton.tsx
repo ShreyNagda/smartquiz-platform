@@ -15,7 +15,13 @@ import {
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
 
-export default function BackButton({ showDialog }: { showDialog?: boolean }) {
+export default function BackButton({
+  showDialog,
+  to,
+}: {
+  showDialog?: boolean;
+  to?: string;
+}) {
   const router = useRouter();
   return (
     <>
@@ -23,7 +29,7 @@ export default function BackButton({ showDialog }: { showDialog?: boolean }) {
         <AlertDialogTrigger asChild>
           <Button
             variant={"link"}
-            onClick={() => !showDialog && router.replace("/dashboard")}
+            onClick={() => !showDialog && router.replace(to || "/dashboard")}
           >
             <IoIosArrowBack /> Back
           </Button>
@@ -37,7 +43,9 @@ export default function BackButton({ showDialog }: { showDialog?: boolean }) {
               You have unsaved changes. Do you want to go back?
             </AlertDialogDescription>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={() => router.replace("/dashboard")}>
+            <AlertDialogAction
+              onClick={() => router.replace(to || "/dashboard")}
+            >
               Yes
             </AlertDialogAction>
           </AlertDialogContent>
