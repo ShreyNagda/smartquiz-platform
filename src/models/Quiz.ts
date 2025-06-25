@@ -12,9 +12,10 @@ export interface IQuiz {
   responses: {
     id: string;
     name: string;
-    details?: { class: string; roll: string };
-    answers: { qid: string; answer: string };
+    details?: { class: string; id: string };
+    answers: { qid: string; answer: string | string[] };
     score: number;
+    maxScore: number;
   }[];
   questions: {
     qid: string;
@@ -61,9 +62,10 @@ const quizSchema = new Schema<IQuiz>(
       {
         id: String,
         name: String,
-        details: { class: String, roll: String },
-        answers: { qid: String, answer: String },
+        details: { class: String, id: String },
+        answers: [{ qid: String, answer: Schema.Types.Mixed }],
         score: Number,
+        maxScore: Number,
       },
     ],
     questions: [

@@ -108,6 +108,7 @@ export default async function QuizConfigPage({
               }}
               _id={id}
               setData={setBasicData}
+              isLive={quizData.status === "live"}
             />
           </TabsContent>
           <TabsContent value="questions" className="p-3">
@@ -116,6 +117,7 @@ export default async function QuizConfigPage({
               <QuestionManager
                 initialQuestions={quizData.questions}
                 setData={setQuestionData}
+                isLive={quizData.status === "live"}
               />
             </div>
           </TabsContent>
@@ -126,6 +128,7 @@ export default async function QuizConfigPage({
                 timeLimit: quizData.timeLimit || 20,
               }}
               setData={setTimeData}
+              isLive={quizData.status === "live"}
             />
           </TabsContent>
         </div>

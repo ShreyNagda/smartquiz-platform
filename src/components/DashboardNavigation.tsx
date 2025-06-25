@@ -60,7 +60,7 @@ export default function DashboardNavigation({
 
   return (
     <>
-      <TabsList className="hidden md:flex gap-4 mb-4">
+      <TabsList className="hidden md:flex gap-2 mb-4">
         <BackButton />
         {tabs.map((tab) => (
           <TabsTrigger value={tab.value} key={tab.value}>
@@ -68,7 +68,8 @@ export default function DashboardNavigation({
           </TabsTrigger>
         ))}
         <Button
-          className="w-[150px]"
+          className="w-full mt-3"
+          variant={status === "live" ? "destructive" : "default"}
           onClick={status === "live" ? deactivateQuiz : activateQuiz}
         >
           {loading ? (
@@ -94,7 +95,7 @@ export default function DashboardNavigation({
             <SheetTitle className="text-base font-semibold mb-3">
               Quiz Settings
             </SheetTitle>
-            <TabsList className="flex flex-col items-start space-y-2">
+            <TabsList className="flex flex-col items-start space-y-1">
               <BackButton />
               {tabs.map((tab) => (
                 <TabsTrigger
@@ -108,7 +109,8 @@ export default function DashboardNavigation({
             </TabsList>
             <SheetFooter>
               <Button
-                className="w-[150px]"
+                className="w-full"
+                variant={status === "live" ? "destructive" : "default"}
                 onClick={status === "live" ? deactivateQuiz : activateQuiz}
               >
                 {loading ? (

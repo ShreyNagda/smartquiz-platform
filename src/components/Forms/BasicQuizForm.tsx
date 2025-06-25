@@ -15,6 +15,7 @@ import {
 } from "../ui/select";
 import { Copy } from "lucide-react";
 import { toast } from "sonner";
+import { usePathname, useRouter } from "next/navigation";
 
 type Data = {
   title: string;
@@ -29,27 +30,38 @@ type Data = {
 type Props = {
   initialQuizData?: Data;
   _id?: string;
+  isLive?: boolean;
   setData: (data: Data) => void;
 };
 
 export default function BasicQuizForm({
   initialQuizData,
+  isLive = false,
   setData,
   _id,
 }: Props) {
+  const pathname = usePathname();
+  const isNew = pathname.endsWith("/new");
+
+  const router = useRouter();
+
   const [quizData, setQuizData] = useState(
     initialQuizData || {
       title: "",
       desc: "",
       accessMode: "private",
       access: "",
-      code: "",
+      code: Math.random().toString(36).substring(2, 8).toUpperCase(),
     }
   );
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (isLive) {
+      toast.error("Quiz is live. Cannot edit");
+      return;
+    }
     setLoading(true);
     setData(quizData);
     await new Promise((res) => setTimeout(res, 500));
@@ -159,19 +171,32 @@ export default function BasicQuizForm({
           </div>
         </div>
 
-        <Button
-          type="submit"
-          disabled={loading || initialQuizData === quizData}
-          className="min-w-[150px]"
-        >
-          {loading ? (
-            <LuLoader className="animate-spin h-5 w-5" />
-          ) : initialQuizData ? (
-            "Save Quiz"
-          ) : (
-            "Create Quiz"
+        <div className="flex gap-4">
+          <Button
+            type="submit"
+            disabled={
+              isLive || loading || (!isNew && initialQuizData === quizData)
+            }
+            className="min-w-[150px]"
+          >
+            {loading ? (
+              <LuLoader className="animate-spin" />
+            ) : isNew ? (
+              "Create Quiz"
+            ) : (
+              "Save Quiz"
+            )}
+          </Button>
+          {isNew && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => router.back()}
+            >
+              Cancel
+            </Button>
           )}
-        </Button>
+        </div>
       </form>
     </>
   );

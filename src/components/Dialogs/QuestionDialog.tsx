@@ -173,12 +173,12 @@ export default function QuestionDialog({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="p-2 text-sm md:text-sm">
+      <DialogContent className="p-4 text-sm md:text-sm w-[1000px]">
         <DialogTitle>Add Question</DialogTitle>
         <DialogDescription>Fill all the fields</DialogDescription>
         <form className="space-y-4" onSubmit={handleSubmit}>
           {error && (
-            <div className="flex gap-2 items-center text-red-400">
+            <div className="flex gap-2 items-center text-red-500">
               <FaInfo />
               {error}
             </div>
@@ -194,6 +194,7 @@ export default function QuestionDialog({
           <div className="flex flex-col md:flex-row items-center gap-2">
             <Label>Question Type:</Label>
             <Select
+              autoComplete=""
               defaultValue={qData.type}
               onValueChange={(value) => {
                 setQData((prev) => ({
@@ -204,10 +205,10 @@ export default function QuestionDialog({
                 }));
               }}
             >
-              <SelectTrigger className="border text-sm md:text-base px-1 py-1">
-                <SelectValue />
+              <SelectTrigger className="border text-xs px-2 py-2">
+                <SelectValue className="text-xs" />
               </SelectTrigger>
-              <SelectContent className="z-50">
+              <SelectContent className="z-50 text-xs">
                 <SelectItem value="single">Single Choice</SelectItem>
                 <SelectItem value="multiple">Multiple Choice</SelectItem>
                 <SelectItem value="short">Short</SelectItem>
@@ -230,7 +231,9 @@ export default function QuestionDialog({
                   {qData.type === "single" ? (
                     <RadioGroup
                       value={qData.correct as string}
-                      onValueChange={(value) => toggleCorrect(value)}
+                      onValueChange={(value) =>
+                        value.length > 0 && toggleCorrect(value)
+                      }
                     >
                       <RadioGroupItem
                         value={opt}
@@ -262,7 +265,6 @@ export default function QuestionDialog({
                       onClick={() => handleRemoveOption(idx)}
                     >
                       <FaMinus />
-                      <div className="hidden md:inline-block">Remove</div>
                     </Button>
                   }
                 </div>
@@ -272,6 +274,7 @@ export default function QuestionDialog({
                   type="button"
                   variant={"link"}
                   onClick={handleAddOption}
+                  className="px-0 py-2"
                 >
                   Add Option
                 </Button>
@@ -282,7 +285,6 @@ export default function QuestionDialog({
           <Input
             type="number"
             placeholder="Enter marks for this question"
-            min={-1}
             value={qData.marks}
             onChange={(ev) =>
               setQData((prev) => ({ ...prev, marks: Number(ev.target.value) }))

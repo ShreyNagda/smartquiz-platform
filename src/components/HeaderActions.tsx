@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import LoginButton from "./Buttons/LoginButton";
-import ProfileButton from "./Buttons/ProfileButton";
+import ProfileButton from "./Buttons/DashboardButton";
 import { type Session } from "next-auth";
 import LogoutButton from "./Buttons/LogoutButton";
 import { Button } from "./ui/button";
@@ -58,8 +58,9 @@ export default function HeaderActions({ session }: Props) {
   const isPreview = pathname.endsWith("/preview");
 
   const isQuizPage = pathname.startsWith("/quiz");
+  const isErrorPage = pathname.startsWith("/error");
 
-  if (isQuizPage) {
+  if (isQuizPage || isErrorPage) {
     return <></>;
   }
   return (

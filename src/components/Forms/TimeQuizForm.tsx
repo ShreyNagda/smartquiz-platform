@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { toast } from "sonner";
 
 type QuizTimeData = {
   timeMode: string;
@@ -22,10 +23,15 @@ type QuizTimeData = {
 
 type Props = {
   initialTimeData: QuizTimeData;
+  isLive?: boolean;
   setData: (data: QuizTimeData) => void;
 };
 
-export default function TimeQuizForm({ initialTimeData, setData }: Props) {
+export default function TimeQuizForm({
+  initialTimeData,
+  setData,
+  isLive = false,
+}: Props) {
   const [timeData, setTimeData] = useState<QuizTimeData>(initialTimeData);
   const [loading, setLoading] = useState(false);
 
@@ -35,6 +41,10 @@ export default function TimeQuizForm({ initialTimeData, setData }: Props) {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (isLive) {
+      toast.error("Quiz is live. Cannot edit");
+      return;
+    }
     setLoading(true);
     setData(timeData);
     await new Promise((res) => setTimeout(res, 500));
@@ -106,7 +116,7 @@ export default function TimeQuizForm({ initialTimeData, setData }: Props) {
         )} */}
         <Button
           type="submit"
-          disabled={loading || timeData === initialTimeData}
+          disabled={isLive || loading || timeData === initialTimeData}
           className="min-w-[150px]"
         >
           {loading ? (

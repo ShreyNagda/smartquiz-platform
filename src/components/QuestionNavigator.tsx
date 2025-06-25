@@ -1,4 +1,6 @@
 import React from "react";
+import { Button } from "./ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 type QuestionNavigatorProps = {
   total: number;
@@ -12,27 +14,64 @@ const QuestionNavigator: React.FC<QuestionNavigatorProps> = ({
   current,
   onNavigate,
   submitted = false,
-}) => (
-  <div className="flex gap-2 justify-center my-4">
-    {Array.from({ length: total }).map((_, idx) => (
-      <button
-        key={idx}
-        onClick={() => onNavigate(idx)}
-        disabled={submitted}
-        className={`w-8 h-8 rounded-full border-2 font-semibold
-          ${
-            idx === current
-              ? "bg-blue-500 text-white border-blue-700"
-              : "bg-white text-blue-700 border-blue-300"
-          }
-          ${submitted ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-100"}
-        `}
-        aria-label={`Go to question ${idx + 1}`}
+}) => {
+  const getVisibleIndexes = () => {
+    let start = Math.max(0, current - 2);
+    let end = Math.min(total - 1, current + 2);
+
+    // Ensure 5 buttons if possible
+    if (end - start < 4) {
+      if (start === 0) {
+        end = Math.min(total - 1, start + 4);
+      } else if (end === total - 1) {
+        start = Math.max(0, end - 4);
+      }
+    }
+
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+  };
+
+  const visibleIndexes = getVisibleIndexes();
+
+  return (
+    <div className="flex flex-wrap gap-2 justify-center my-4">
+      <Button
+        variant={"outline"}
+        className="w-8 h-8 rounded-sm font-semibold"
+        disabled={current === 0}
+        onClick={() => onNavigate(current - 1)}
       >
-        {idx + 1}
-      </button>
-    ))}
-  </div>
-);
+        <ChevronLeft />
+      </Button>
+
+      {visibleIndexes.map((idx) => (
+        <Button
+          key={idx}
+          onClick={() => onNavigate(idx)}
+          disabled={submitted}
+          className={`w-8 h-8 rounded-sm font-semibold hover:bg-primary/20
+            ${
+              idx === current
+                ? "bg-primary hover:bg-primary/70 text-white"
+                : "bg-transparent border border-primary"
+            }
+          `}
+          aria-label={`Go to question ${idx + 1}`}
+        >
+          {idx + 1}
+        </Button>
+      ))}
+
+      <Button
+        variant={"outline"}
+        className="w-8 h-8 rounded-sm font-semibold"
+        disabled={current === total - 1}
+        onClick={() => onNavigate(current + 1)}
+      >
+        <ChevronRight />
+      </Button>
+    </div>
+  );
+};
 
 export default QuestionNavigator;

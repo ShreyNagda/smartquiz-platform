@@ -38,6 +38,7 @@ export default function Overview(overviewData: OverviewData) {
           </Tooltip>
         </div>
       </div>
+      {/* <div>Title</div> */}
       <div className="flex flex-wrap items-center gap-2">
         {data.map((d) => (
           <Card key={d.title} className="flex-1 bg-card">
@@ -48,7 +49,7 @@ export default function Overview(overviewData: OverviewData) {
           </Card>
         ))}
       </div>
-      <div className="py-1">
+      <div className="py-1 md:px-2">
         <p className="capitalize"> Access Mode: {overviewData.accessMode}</p>
         {overviewData.accessMode === "private" && (
           <p>Code: {overviewData.code!}</p>
@@ -58,8 +59,8 @@ export default function Overview(overviewData: OverviewData) {
         </div>
       </div>
 
-      <Button type="button" variant={"link"} className="hidden md:flex">
-        <Link href={`${overviewData.id}/preview`}>Preview</Link>
+      <Button type="button" variant={"link"} className="hidden md:flex px-2">
+        <Link href={`/quiz/${overviewData.id}?preview=true`}>Preview</Link>
       </Button>
     </>
   );

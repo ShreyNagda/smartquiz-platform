@@ -1,19 +1,16 @@
 "use client";
-import React, { useState } from "react";
-import QuestionDialog from "./QuestionDialog";
+
+import React, { useEffect, useState } from "react";
+import QuestionDialog from "../Dialogs/QuestionDialog";
 import { Button } from "../ui/button";
 import { MdEdit } from "react-icons/md";
 import { LuLoader } from "react-icons/lu";
 
 import { RiAiGenerate2 } from "react-icons/ri";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-  DialogTrigger,
-} from "../ui/dialog";
-import { FaPlus } from "react-icons/fa";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { ChevronDown } from "lucide-react";
+import { FaFile, FaPlus } from "react-icons/fa";
+import { toast } from "sonner";
 
 type Question = {
   qid: string;
@@ -26,17 +23,17 @@ type Question = {
 
 type Props = {
   initialQuestions: Question[];
+  isLive?: boolean;
   setData: (value: Question[]) => void;
 };
 
-export default function QuestionManager({ initialQuestions, setData }: Props) {
+export default function QuestionManager({
+  initialQuestions,
+  setData,
+  isLive = false,
+}: Props) {
   const [questions, setQuestions] = useState<Question[]>(initialQuestions);
   const [loading, setLoading] = useState(false);
-  // useEffect(() => {
-  //   if (initialQuestions !== questions) {
-  //     alert("Unsaved changes");
-  //   }
-  // }, [initialQuestions, questions]);
 
   const handleAddQuestion = (data: {
     qid: string;
@@ -60,38 +57,81 @@ export default function QuestionManager({ initialQuestions, setData }: Props) {
   };
 
   const handleSave = async () => {
+    if (isLive) {
+      toast.error("Quiz is live. Cannot edit");
+      return;
+    }
     setLoading(true);
     setData(questions); // Send updated questions to parent
     await new Promise((res) => setTimeout(res, 500));
     setLoading(false);
   };
 
+  useEffect(() => {
+    const beforeUnload = (e: BeforeUnloadEvent) => {
+      const isDirty =
+        JSON.stringify(questions) !== JSON.stringify(initialQuestions);
+      if (isDirty) {
+        console.log("Changes");
+        e.preventDefault();
+        e.returnValue = ""; // Required for most browsers
+        return "";
+      }
+    };
+
+    window.addEventListener("beforeunload", beforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", beforeUnload);
+    };
+  }, [initialQuestions, questions]);
+
   return (
     <div className="flex flex-col items-start p-2">
       <div className="w-full flex justify-between items-center">
         <div className="text-lg my-2 font-semibold">Question Manager</div>
-        <div className="flex md:flex-row  gap-2 items-center p-2">
-          <QuestionDialog handleAddQuestion={handleAddQuestion}>
-            <Button variant={"secondary"}>
-              <FaPlus />
-              <div className="hidden md:block text-sm">Add Question</div>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button className="rounded-xs flex items-center gap-2">
+              Add Question
+              <ChevronDown className="h-4 w-4" />
             </Button>
-          </QuestionDialog>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button type="button" variant={"outline"} className="text-sm">
-                <div className="hidden md:inline-block">AI generate</div>
-                <RiAiGenerate2 />
+          </PopoverTrigger>
+          <PopoverContent
+            className="p-2 w-60 shadow-lg space-y-2 rounded-xs"
+            align="end"
+          >
+            <QuestionDialog handleAddQuestion={handleAddQuestion}>
+              <Button
+                variant="ghost"
+                className="w-full justify-start rounded-sm"
+              >
+                <FaPlus /> New Question
               </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogTitle>Coming Soon</DialogTitle>
-              <DialogDescription>
-                This feature is under development
-              </DialogDescription>
-            </DialogContent>
-          </Dialog>
-        </div>
+            </QuestionDialog>
+
+            <Button
+              variant="ghost"
+              className="w-full justify-start rounded-sm"
+              onClick={() => {
+                // trigger file import dialog here
+                alert("Import from file clicked");
+              }}
+            >
+              <FaFile /> Import from file
+            </Button>
+
+            <Button
+              variant="ghost"
+              className="w-full justify-start rounded-sm"
+              onClick={() => {
+                // trigger AI generation modal/dialog here
+                alert("AI generation clicked");
+              }}
+            >
+              <RiAiGenerate2 /> Generate using AI
+            </Button>
+          </PopoverContent>
+        </Popover>
       </div>
 
       <div className="space-y-2 w-full">
@@ -116,7 +156,7 @@ export default function QuestionManager({ initialQuestions, setData }: Props) {
         {questions.length > 0 ? (
           <Button
             type="submit"
-            disabled={loading || initialQuestions === questions}
+            disabled={isLive || loading || initialQuestions === questions}
             className="min-w-[150px]"
             onClick={handleSave}
           >

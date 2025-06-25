@@ -5,7 +5,6 @@ import { redirect } from "next/navigation";
 import React from "react";
 
 export default function CreateNewQuiz() {
-  const code = Math.random().toString(36).substring(2, 8).toUpperCase();
   async function createNewQuiz(data: {
     title: string;
     desc?: string;
@@ -23,15 +22,7 @@ export default function CreateNewQuiz() {
   }
   return (
     <>
-      <BasicQuizForm
-        setData={createNewQuiz}
-        initialQuizData={{
-          title: "",
-          accessMode: "private",
-          access: "",
-          code,
-        }}
-      />
+      <BasicQuizForm setData={createNewQuiz} />
     </>
   );
 }

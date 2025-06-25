@@ -1,6 +1,12 @@
 "use client";
 
+import { useState, useEffect, FormEvent } from "react";
+import { useParams, useSearchParams, useRouter } from "next/navigation";
+import { LuLoader } from "react-icons/lu";
+import { toast } from "sonner";
+
 import BackButton from "@/components/Buttons/BackButton";
+import QuizAttemptPage from "@/components/QuizAttempt";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,10 +16,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { IQuiz } from "@/models/Quiz";
-import { redirect, useParams, useRouter } from "next/navigation";
-import React, { FormEvent, useEffect, useState } from "react";
-import { LuLoader } from "react-icons/lu";
-import { toast } from "sonner";
+// import { FaInfoCircle } from "react-icons/fa";
 
 type UserData = {
   name: string;
@@ -26,13 +29,25 @@ type UserData = {
 
 export default function ClientQuizPage() {
   const { id } = useParams<{ id: string }>();
+  const searchParams = useSearchParams();
   const router = useRouter();
+  const codeFromURL = searchParams.get("code");
 
   const [loading, setLoading] = useState(true);
   const [quizData, setQuizData] = useState<IQuiz | null>(null);
-  const [userData, setUserData] = useState<UserData | null>(null);
+  const [userData, setUserData] = useState<UserData>({
+    name: "",
+    code: codeFromURL || "",
+  });
+  const [startQuiz, setStartQuiz] = useState(false);
 
   useEffect(() => {
+    const attempted = JSON.parse(localStorage.getItem("quizzes") || "[]");
+    if (attempted.includes(id)) {
+      router.replace("/error/AlreadyAttempted");
+      return;
+    }
+
     const fetchQuizData = async () => {
       try {
         const res = await fetch(
@@ -44,13 +59,15 @@ export default function ClientQuizPage() {
           }
         );
 
-        if (!res.ok) router.replace(`/error/No Quiz Found`);
+        if (!res.ok) {
+          router.replace("/error/No-Quiz-Found");
+          return;
+        }
 
         const data: IQuiz = await res.json();
         setQuizData(data);
-      } catch (error) {
-        console.error(error);
-        setQuizData(null);
+      } catch (err) {
+        console.error(err);
       } finally {
         setLoading(false);
       }
@@ -58,6 +75,19 @@ export default function ClientQuizPage() {
 
     fetchQuizData();
   }, [id, router]);
+
+  const handleStartQuiz = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!userData.name) return toast.error("Please enter your name");
+    if (!quizData) return;
+
+    const isCorrectCode =
+      quizData.accessMode === "public" || userData.code === quizData.code;
+    if (!isCorrectCode) return toast.error("Invalid quiz code");
+
+    setStartQuiz(true);
+  };
 
   if (loading) {
     return (
@@ -67,78 +97,70 @@ export default function ClientQuizPage() {
     );
   }
 
-  if (!quizData) {
-    redirect("/error/No-Quiz-Found");
-  }
-
-  const isPublic = quizData.accessMode === "public";
-
-  const handleStartQuiz = (ev: FormEvent<HTMLFormElement>) => {
-    ev.preventDefault();
-    if (userData === null) {
-      toast.error("Enter required details");
-    }
-    if (userData?.code !== quizData.access) {
-      toast.error("Invalid code");
-    }
-    const allowAccess = !isPublic ? userData?.code === quizData.access : true;
-
-    if (allowAccess && userData != null) console.log(userData);
-  };
+  if (!quizData) return null;
+  if (startQuiz)
+    return <QuizAttemptPage quizData={quizData} userData={userData} />;
 
   return (
-    <section className="h-screen w-full p-4 flex items-center">
-      <Card className="p-4 text-center w-full max-w-[600px] mx-auto">
+    <section className="h-screen w-full p-4 flex flex-col justify-center items-center">
+      {/* <div className="flex items-center gap-1 text-primary">
+        <p className="flex items-center gap-2">
+          <FaInfoCircle />
+          Preview
+        </p>
+      </div> */}
+      <Card className="p-4 w-full max-w-xl mx-auto text-center">
         <CardTitle className="text-2xl">{quizData.title}</CardTitle>
         <CardDescription>{quizData.desc}</CardDescription>
         <CardContent>
           {quizData.status !== "live" ? (
             <>
-              <div className="text-red-400">
-                Quiz is not live. Please contact administrator
+              <div className="text-red-500 mb-4">
+                Quiz is not live. Contact admin.
               </div>
               <BackButton to="/" />
             </>
           ) : (
-            <form className="space-y-2" onSubmit={handleStartQuiz}>
+            <form className="space-y-3" onSubmit={handleStartQuiz}>
               <Input
-                type="text"
                 placeholder="Enter name"
                 required
-                onChange={(ev) =>
-                  setUserData((prev) => ({ ...prev, name: ev.target.value }))
+                value={userData.name}
+                onChange={(e) =>
+                  setUserData((prev) => ({ ...prev, name: e.target.value }))
                 }
               />
-              {quizData?.userDetailsRequired && (
-                <div className="flex gap-2">
+              {quizData.userDetailsRequired && (
+                <div className="flex flex-col md:flex-row gap-2">
                   <Input
-                    type="text"
-                    placeholder="Enter id"
+                    placeholder="Enter ID"
                     required
-                    onChange={(ev) =>
-                      setUserData((prev) => ({ ...prev, id: ev.target.value }))
+                    onChange={(e) =>
+                      setUserData((prev) => ({
+                        ...prev,
+                        details: { ...prev.details, id: e.target.value },
+                      }))
                     }
                   />
                   <Input
-                    type="text"
                     placeholder="Enter class"
                     required
-                    onChange={(ev) =>
+                    onChange={(e) =>
                       setUserData((prev) => ({
                         ...prev,
-                        class: ev.target.value,
+                        details: { ...prev.details, class: e.target.value },
                       }))
                     }
                   />
                 </div>
               )}
-              {!isPublic && (
+              {quizData.accessMode !== "public" && (
                 <Input
-                  type="text"
                   placeholder="Enter code"
                   required
-                  onChange={(ev) =>
-                    setUserData((prev) => ({ ...prev, code: ev.target.value }))
+                  value={userData.code}
+                  onChange={(e) =>
+                    setUserData((prev) => ({ ...prev, code: e.target.value }))
                   }
                 />
               )}
