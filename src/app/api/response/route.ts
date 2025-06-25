@@ -78,7 +78,11 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const responseId = name.toLowerCase() + "-" + details.id;
+    const responseId =
+      name.toLowerCase() + "-" + details.id
+        ? details.id
+        : Math.random().toString(36).substring(2, 6);
+    console.log(responseId);
 
     const newResponse = {
       id: responseId,

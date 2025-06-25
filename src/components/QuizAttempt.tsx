@@ -19,6 +19,7 @@ import { LuLoader } from "react-icons/lu";
 
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { useRouter } from "next/navigation";
 
 type UserData = {
   name: string;
@@ -60,6 +61,7 @@ export default function QuizAttempt({
   } | null>(null);
 
   const violationCount = useRef(0);
+  const router = useRouter();
 
   const questions = quizData.questions;
 
@@ -207,6 +209,9 @@ export default function QuizAttempt({
           }
         >
           Download Response as PDF
+        </Button>
+        <Button variant={"secondary"} onClick={() => router.replace("/")}>
+          Back to Home
         </Button>
       </div>
     );

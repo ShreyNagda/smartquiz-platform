@@ -60,7 +60,7 @@ const quizSchema = new Schema<IQuiz>(
     hostId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     responses: [
       {
-        id: String,
+        id: { type: String, unique: true },
         name: String,
         details: { class: String, id: String },
         answers: [{ qid: String, answer: Schema.Types.Mixed }],
