@@ -1,6 +1,7 @@
 import User from "@/models/User";
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
+import dbConnect from "./db";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [Google],
@@ -10,6 +11,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   secret: process.env.AUTH_SECRET,
   callbacks: {
     jwt: async function ({ token, user, account }) {
+      await dbConnect();
       if (account && user) {
         const existingUser =
           (await User.findOne({ email: user.email })) ||
