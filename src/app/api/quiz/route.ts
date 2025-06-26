@@ -1,8 +1,9 @@
+import dbConnect from "@/lib/db";
 import Quiz from "@/models/Quiz";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-  console.log(req.url);
+  await dbConnect();
   const body = await req.json();
   const { id, code } = body;
   const query: { _id?: string; code?: string } = {};

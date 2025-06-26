@@ -138,7 +138,7 @@ export default function Home() {
       body: JSON.stringify({ code: quizCode }),
     });
     const data = await res.json();
-    redirect(`/quiz/${data._id}`);
+    redirect(`/quiz/${data._id}?code=${quizCode}`);
   };
 
   return (

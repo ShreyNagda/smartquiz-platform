@@ -37,7 +37,7 @@ export default function Overview(overviewData: OverviewData) {
           <Tooltip>
             <TooltipTrigger asChild>
               {/* TODO implement the print button */}
-              <Button type="button" variant={"link"} size={"icon"}>
+              <Button type="button" variant={"link"} size={"icon"} disabled>
                 <Link href={`/quiz/${overviewData.id}?preview=true`}>
                   <ArrowUpRight />
                 </Link>
@@ -48,7 +48,7 @@ export default function Overview(overviewData: OverviewData) {
           <Tooltip>
             <TooltipTrigger asChild>
               {/* TODO implement the print button */}
-              <Button type="button" variant={"link"} size={"icon"}>
+              <Button type="button" variant={"link"} size={"icon"} disabled>
                 <BsPrinter />
               </Button>
             </TooltipTrigger>

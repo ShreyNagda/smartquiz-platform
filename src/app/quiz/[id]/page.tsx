@@ -86,12 +86,22 @@ export default function ClientQuizPage() {
       quizData.accessMode === "public" || userData.code === quizData.code;
     if (!isCorrectCode) return toast.error("Invalid quiz code");
 
+    if (
+      quizData.responses.filter(
+        (res) =>
+          res.name === userData.name &&
+          res.details &&
+          res.details.id === userData.details?.id
+      ).length > 0
+    ) {
+      return toast.error("Already responded");
+    }
     setStartQuiz(true);
   };
 
   if (loading) {
     return (
-      <div className="h-screen flex items-center justify-center">
+      <div className="h-svh flex items-center justify-center">
         <LuLoaderCircle className="animate-spin text-2xl" />
       </div>
     );
@@ -102,13 +112,7 @@ export default function ClientQuizPage() {
     return <QuizAttemptPage quizData={quizData} userData={userData} />;
 
   return (
-    <section className="h-screen w-full p-4 flex flex-col justify-center items-center">
-      {/* <div className="flex items-center gap-1 text-primary">
-        <p className="flex items-center gap-2">
-          <FaInfoCircle />
-          Preview
-        </p>
-      </div> */}
+    <section className="w-full p-4 flex flex-col justify-center items-center">
       <Card className="p-4 w-full max-w-xl mx-auto text-center">
         <CardTitle className="text-2xl">{quizData.title}</CardTitle>
         <CardDescription>{quizData.desc}</CardDescription>

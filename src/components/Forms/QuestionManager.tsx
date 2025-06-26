@@ -90,10 +90,10 @@ export default function QuestionManager({
 
   return (
     <div className="flex flex-col items-start p-2">
-      <div className="w-full flex justify-between items-center">
+      <div className="w-full flex  md:flex-row justify-between items-center">
         <div className="text-lg my-2 font-semibold">Question Manager</div>
         <Popover>
-          <PopoverTrigger asChild>
+          <PopoverTrigger asChild className="px-0">
             <Button className="rounded-xs flex items-center gap-2 bg-background hover:bg-background/90">
               Add Question
               <ChevronDown className="h-4 w-4" />

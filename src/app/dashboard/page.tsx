@@ -31,7 +31,7 @@ export default async function DashboardPage() {
   const serializableQuizzes = JSON.parse(JSON.stringify(quizzes));
 
   return (
-    <div className="items-start w-full p-2">
+    <div className="items-start w-full p-4 md:p-8">
       <div className="text-xl underline underline-offset-8">My Quizzes</div>
 
       {quizzes && (

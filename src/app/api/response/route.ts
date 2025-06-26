@@ -46,15 +46,22 @@ export async function POST(req: NextRequest) {
             Array.isArray(userAnswer.answer) &&
             Array.isArray(question.correct)
           ) {
-            const correctSet = new Set(question.correct);
-            const answerSet = new Set(userAnswer.answer);
+            const correctAnswers = new Set(question.correct);
+            const selectedAnswers = new Set<string>(userAnswer.answer);
 
-            if (
-              correctSet.size === answerSet.size &&
-              [...correctSet].every((opt) => answerSet.has(opt))
-            ) {
-              totalScore += marks;
-            }
+            const numCorrectSelected = [...selectedAnswers].filter((ans) =>
+              correctAnswers.has(ans)
+            ).length;
+
+            const totalCorrect = correctAnswers.size;
+
+            // Basic scoring: award points for correct, subtract for incorrect
+            let score = (numCorrectSelected / totalCorrect) * marks;
+
+            // Clamp score between 0 and full marks
+            score = Math.round(Math.max(0, Math.min(score, marks)));
+
+            totalScore += score;
           }
           console.log(totalScore);
           break;
@@ -67,8 +74,8 @@ export async function POST(req: NextRequest) {
             const sim = stringSimilarity(userAnswer.answer, question.correct);
 
             if (sim > 0.9) totalScore += marks;
-            else if (sim > 0.7) totalScore += marks * 0.7;
-            else if (sim > 0.5) totalScore += marks * 0.5;
+            else if (sim > 0.7) totalScore += marks * 0.85;
+            else if (sim > 0.5) totalScore += marks * 0.7;
           }
           console.log(totalScore);
           break;
@@ -78,14 +85,18 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const responseId =
-      name.toLowerCase() + "-" + details.id
-        ? details.id
-        : Math.random().toString(36).substring(2, 6);
+    let responseId = "";
+
+    responseId += name.toString().toLowerCase();
+    if (details && details.id !== undefined) {
+      responseId += `-${details.id}`;
+    }
+    responseId += `-${quizId}`;
+
     console.log(responseId);
 
     const newResponse = {
-      id: responseId,
+      _id: responseId,
       name: name,
       details: details,
       answers,

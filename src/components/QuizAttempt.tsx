@@ -83,8 +83,8 @@ export default function QuizAttempt({
       const data = await apiResponse.json();
       setResponse(data);
 
-      const attempted = JSON.parse(localStorage.getItem("quizzes") || "[]");
-      localStorage.setItem("quizzes", JSON.stringify([...attempted, quizId]));
+      // const attempted = JSON.parse(localStorage.getItem("quizzes") || "[]");
+      // localStorage.setItem("quizzes", JSON.stringify([...attempted, quizId]));
     },
     [answers, quizData._id, userData]
   );
@@ -191,9 +191,11 @@ export default function QuizAttempt({
           </p>
         )}
         <div className="text-xl">{response.name}</div>
-        <div>
-          [{response.details?.class}] [{response.details?.id}]
-        </div>
+        {response.details && (
+          <div>
+            [{response.details?.class}] [{response.details?.id}]
+          </div>
+        )}
         <div>
           {response.score} / {response.maxScore}
         </div>
