@@ -7,10 +7,14 @@ export async function middleware(request: NextRequest) {
   const token = await getToken({
     req: request,
     secret: process.env.AUTH_SECRET, // or NEXTAUTH_SECRET if using that
+    cookieName:
+      process.env.NODE_ENV === "production"
+        ? "__Secure-authjs.session-token"
+        : "authjs.session-token",
   });
-  console.log(token);
+  console.log(`token from middleware ${token}`);
 
-  if (!token) {
+  if (!token?.id) {
     // Not authenticated, redirect to sign-in or error page
     return NextResponse.redirect(new URL("/error/not-signed-in", request.url));
   }
