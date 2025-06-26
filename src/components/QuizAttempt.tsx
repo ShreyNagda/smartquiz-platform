@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { IQuiz } from "@/models/Quiz";
-import { LuLoader } from "react-icons/lu";
+import { LuLoaderCircle } from "react-icons/lu";
 
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -176,7 +176,7 @@ export default function QuizAttempt({
   if (!questions?.length) {
     return (
       <div className="h-screen flex items-center justify-center">
-        <LuLoader className="animate-spin text-2xl" />
+        <LuLoaderCircle className="animate-spin text-2xl" />
       </div>
     );
   }

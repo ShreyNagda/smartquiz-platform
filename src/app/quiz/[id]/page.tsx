@@ -2,7 +2,7 @@
 
 import { useState, useEffect, FormEvent } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
-import { LuLoader } from "react-icons/lu";
+import { LuLoaderCircle } from "react-icons/lu";
 import { toast } from "sonner";
 
 import BackButton from "@/components/Buttons/BackButton";
@@ -92,7 +92,7 @@ export default function ClientQuizPage() {
   if (loading) {
     return (
       <div className="h-screen flex items-center justify-center">
-        <LuLoader className="animate-spin text-2xl" />
+        <LuLoaderCircle className="animate-spin text-2xl" />
       </div>
     );
   }

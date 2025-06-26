@@ -5,7 +5,7 @@ import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 import { Label } from "../ui/label";
 import { Switch } from "../ui/switch";
-import { LuLoader } from "react-icons/lu";
+import { LuLoaderCircle } from "react-icons/lu";
 import {
   Select,
   SelectContent,
@@ -16,6 +16,8 @@ import {
 import { Copy } from "lucide-react";
 import { toast } from "sonner";
 import { usePathname, useRouter } from "next/navigation";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { FaInfoCircle } from "react-icons/fa";
 
 type Data = {
   title: string;
@@ -76,6 +78,7 @@ export default function BasicQuizForm({
   return (
     <>
       <div className="my-2 text-lg font-semibold">Basic Settings</div>
+
       <form className="space-y-4" onSubmit={handleSubmit}>
         <div>
           <Label htmlFor="title">Title</Label>
@@ -96,7 +99,7 @@ export default function BasicQuizForm({
             id="desc"
             name="desc"
             value={quizData?.desc}
-            rows={6}
+            rows={3}
             onChange={(ev: ChangeEvent<HTMLTextAreaElement>) =>
               handleChange("desc", ev.target.value)
             }
@@ -180,13 +183,23 @@ export default function BasicQuizForm({
             className="min-w-[150px]"
           >
             {loading ? (
-              <LuLoader className="animate-spin" />
+              <LuLoaderCircle className="animate-spin" />
             ) : isNew ? (
               "Create Quiz"
             ) : (
               "Save Quiz"
             )}
           </Button>
+          {isLive && (
+            <Tooltip>
+              <TooltipTrigger>
+                <FaInfoCircle className="fill-red-400" />
+              </TooltipTrigger>
+              <TooltipContent className="bg-red-400">
+                Quiz is live. No changes can be made
+              </TooltipContent>
+            </Tooltip>
+          )}
           {isNew && (
             <Button
               type="button"

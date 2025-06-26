@@ -1,16 +1,19 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
-import QuestionDialog from "../Dialogs/QuestionDialog";
+//Shadcn Components
 import { Button } from "../ui/button";
-import { MdEdit } from "react-icons/md";
-import { LuLoader } from "react-icons/lu";
-
-import { RiAiGenerate2 } from "react-icons/ri";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { ChevronDown } from "lucide-react";
-import { FaFile, FaPlus } from "react-icons/fa";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { toast } from "sonner";
+//Custom Components
+import QuestionDialog from "../Dialogs/QuestionDialog";
+import GenerateFromFileDialog from "../Dialogs/GenerateFromFileDialog";
+import GenerateUsingAiDialog from "../Dialogs/GenerateUsingAiDialog";
+//Icons
+import { MdEdit } from "react-icons/md";
+import { LuLoaderCircle } from "react-icons/lu";
+import { ChevronDown } from "lucide-react";
+import { FaInfoCircle, FaPlus } from "react-icons/fa";
 
 type Question = {
   qid: string;
@@ -91,7 +94,7 @@ export default function QuestionManager({
         <div className="text-lg my-2 font-semibold">Question Manager</div>
         <Popover>
           <PopoverTrigger asChild>
-            <Button className="rounded-xs flex items-center gap-2">
+            <Button className="rounded-xs flex items-center gap-2 bg-background hover:bg-background/90">
               Add Question
               <ChevronDown className="h-4 w-4" />
             </Button>
@@ -109,27 +112,8 @@ export default function QuestionManager({
               </Button>
             </QuestionDialog>
 
-            <Button
-              variant="ghost"
-              className="w-full justify-start rounded-sm"
-              onClick={() => {
-                // trigger file import dialog here
-                alert("Import from file clicked");
-              }}
-            >
-              <FaFile /> Import from file
-            </Button>
-
-            <Button
-              variant="ghost"
-              className="w-full justify-start rounded-sm"
-              onClick={() => {
-                // trigger AI generation modal/dialog here
-                alert("AI generation clicked");
-              }}
-            >
-              <RiAiGenerate2 /> Generate using AI
-            </Button>
+            <GenerateFromFileDialog />
+            <GenerateUsingAiDialog />
           </PopoverContent>
         </Popover>
       </div>
@@ -154,18 +138,30 @@ export default function QuestionManager({
           </div>
         ))}
         {questions.length > 0 ? (
-          <Button
-            type="submit"
-            disabled={isLive || loading || initialQuestions === questions}
-            className="min-w-[150px]"
-            onClick={handleSave}
-          >
-            {loading ? (
-              <LuLoader className="animate-spin h-5 w-5" />
-            ) : (
-              `Save ${initialQuestions === questions ? "All" : ""} Questions`
+          <div className="flex gap-2 items-center">
+            <Button
+              type="submit"
+              disabled={isLive || loading || initialQuestions === questions}
+              className="min-w-[150px]"
+              onClick={handleSave}
+            >
+              {loading ? (
+                <LuLoaderCircle className="animate-spin h-5 w-5" />
+              ) : (
+                `Save ${initialQuestions === questions ? "All" : ""} Questions`
+              )}
+            </Button>
+            {isLive && (
+              <Tooltip>
+                <TooltipTrigger>
+                  <FaInfoCircle className="fill-red-400" />
+                </TooltipTrigger>
+                <TooltipContent className="bg-red-400">
+                  Quiz is live. No changes can be made
+                </TooltipContent>
+              </Tooltip>
             )}
-          </Button>
+          </div>
         ) : (
           "No Questions"
         )}

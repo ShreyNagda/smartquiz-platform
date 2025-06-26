@@ -76,7 +76,7 @@ export default async function QuizConfigPage({
   };
 
   return (
-    <div className="flex-grow h-full w-screen p-3">
+    <div className="flex-grow h-[500px] w-screen p-1 md:p-3">
       <Tabs
         defaultValue="overview"
         className="flex-col md:flex-row h-full w-full"
@@ -84,7 +84,7 @@ export default async function QuizConfigPage({
         <DashboardNavigation id={id} status={quizData.status} />
 
         {/* Tab Content */}
-        <div className="flex-grow w-full">
+        <div className="flex-grow h-full w-full p-3">
           <TabsContent value="overview" className="p-3">
             <Overview
               numberOfQuestions={quizData.questions.length || 0}
@@ -131,6 +131,7 @@ export default async function QuizConfigPage({
               isLive={quizData.status === "live"}
             />
           </TabsContent>
+          <TabsContent className="" value="responses"></TabsContent>
         </div>
       </Tabs>
     </div>

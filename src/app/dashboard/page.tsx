@@ -31,11 +31,11 @@ export default async function DashboardPage() {
   const serializableQuizzes = JSON.parse(JSON.stringify(quizzes));
 
   return (
-    <div className="h-svh w-full p-2">
+    <div className="items-start w-full p-2">
       <div className="text-xl underline underline-offset-8">My Quizzes</div>
 
       {quizzes && (
-        <div className="w-full max-w-[350px] md:max-w-3/4 mx-auto md:m-0 grid grid-cols-1 md:grid-cols-2 gap-2 py-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 py-5">
           {serializableQuizzes.map((q: IQuiz) => {
             return <QuizCard key={q._id} q={q} />;
           })}

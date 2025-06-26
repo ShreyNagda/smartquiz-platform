@@ -4,7 +4,8 @@ import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "../ui/button";
-import { LuLoader } from "react-icons/lu";
+import { LuLoaderCircle } from "react-icons/lu";
+import { FaInfoCircle } from "react-icons/fa";
 import {
   Select,
   SelectContent,
@@ -12,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { toast } from "sonner";
 
 type QuizTimeData = {
@@ -114,17 +116,29 @@ export default function TimeQuizForm({
             </div>
           </div>
         )} */}
-        <Button
-          type="submit"
-          disabled={isLive || loading || timeData === initialTimeData}
-          className="min-w-[150px]"
-        >
-          {loading ? (
-            <LuLoader className="animate-spin h-5 w-5" />
-          ) : (
-            "Save Quiz"
+        <div className="flex gap-2 items-center">
+          <Button
+            type="submit"
+            disabled={isLive || loading || timeData === initialTimeData}
+            className="min-w-[150px]"
+          >
+            {loading ? (
+              <LuLoaderCircle className="animate-spin h-5 w-5" />
+            ) : (
+              "Save Quiz"
+            )}
+          </Button>
+          {isLive && (
+            <Tooltip>
+              <TooltipTrigger>
+                <FaInfoCircle className="fill-red-400" />
+              </TooltipTrigger>
+              <TooltipContent className="bg-red-400">
+                Quiz is live. No changes can be made
+              </TooltipContent>
+            </Tooltip>
           )}
-        </Button>
+        </div>
       </form>
     </>
   );

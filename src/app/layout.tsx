@@ -25,10 +25,10 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`dark antialiased ${geistMono.className} h-svh flex flex-col`}
+        className={`dark antialiased ${geistMono.className} min-h-svh flex flex-col`}
       >
         <Header session={session} />
-        <main className="flex-grow flex flex-col justify-center items-center overflow-x-hidden">
+        <main className="flex-grow flex flex-col items-center overflow-x-hidden">
           {children}
         </main>
         <Footer />

@@ -12,7 +12,7 @@ import {
   Sheet,
 } from "./ui/sheet";
 import { toast } from "sonner";
-import { LuLoader } from "react-icons/lu";
+import { LuLoaderCircle } from "react-icons/lu";
 import { redirect } from "next/navigation";
 import BackButton from "./Buttons/BackButton";
 
@@ -73,7 +73,7 @@ export default function DashboardNavigation({
           onClick={status === "live" ? deactivateQuiz : activateQuiz}
         >
           {loading ? (
-            <LuLoader className="animate-spin" />
+            <LuLoaderCircle className="animate-spin" />
           ) : status !== "live" ? (
             "Activate Quiz"
           ) : (
@@ -83,9 +83,9 @@ export default function DashboardNavigation({
       </TabsList>
 
       {/* Mobile Sheet Menu */}
-      <div className="md:hidden mb-4">
+      <div className="md:hidden p-3">
         <Sheet modal={false} open={sheetState} onOpenChange={setSheetState}>
-          <SheetTrigger className="p-2 border rounded-md shadow-sm">
+          <SheetTrigger className="rounded-md shadow-sm h-[8px]">
             <IoMenu className="h-6 w-6" />
           </SheetTrigger>
           <SheetContent
@@ -114,7 +114,7 @@ export default function DashboardNavigation({
                 onClick={status === "live" ? deactivateQuiz : activateQuiz}
               >
                 {loading ? (
-                  <LuLoader className="animate-spin" />
+                  <LuLoaderCircle className="animate-spin" />
                 ) : status !== "live" ? (
                   "Activate Quiz"
                 ) : (
