@@ -13,7 +13,6 @@ type Props = {
 };
 export default function Header({ session }: Props) {
   const pathName = usePathname();
-  console.log(pathName);
 
   const showLoginButton = !session;
   const showDashboardButton: boolean =
