@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 export default async function QuizPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
   searchParams: { preview: boolean };
 }) {
   const { id } = await params;
