@@ -25,7 +25,7 @@ export default function Header({ session }: Props) {
       </Link>
       <div className="flex items-center gap-4">
         {showLoginButton && <LoginButton />}
-        {showDashboardButton && <DashboardButton />}
+        {!showLoginButton && showDashboardButton && <DashboardButton />}
         {showLogoutButton && (
           <>
             {showDashboardButton && <BackButton to="/" />}

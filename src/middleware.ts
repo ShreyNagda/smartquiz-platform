@@ -8,8 +8,9 @@ export async function middleware(request: NextRequest) {
     req: request,
     secret: process.env.AUTH_SECRET, // or NEXTAUTH_SECRET if using that
   });
+  console.log(token);
 
-  if (!token?.id) {
+  if (!token) {
     // Not authenticated, redirect to sign-in or error page
     return NextResponse.redirect(new URL("/error/not-signed-in", request.url));
   }

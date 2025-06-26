@@ -22,12 +22,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           }));
 
         token.id = existingUser._id.toString();
-        console.log(token);
+        console.log("Token from auth.ts", token);
       }
       return token;
     },
     async session({ session, token }) {
-      if (token?.id) session.user.id = token.id as string;
+      if (token?.id) {
+        session.user = {
+          ...session.user, // preserve other fields (name, email, etc.)
+          id: token.id as string,
+        };
+      }
       return session;
     },
   },
