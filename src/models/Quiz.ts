@@ -13,7 +13,7 @@ export interface IQuiz {
     id: string;
     name: string;
     details?: { class: string; id: string };
-    answers: { qid: string; answer: string | string[] };
+    answers: { qid: string; answer: string | string[] }[];
     score: number;
     maxScore: number;
     submittedAt: Date;

@@ -1,0 +1,4 @@
+text,type,options,correct,marks
+What is 2+2?,single,"2,3,4,5",4,1
+Select all fruits,multiple,"Apple,Dog,Banana","Apple,Banana",2
+Describe gravity,short,,Gravity is a fundamental force of attraction between all objects with mass,3

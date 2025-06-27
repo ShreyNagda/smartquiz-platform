@@ -14,9 +14,10 @@ import { Tabs, TabsContent } from "@/components/ui/tabs";
 import DashboardNavigation from "@/components/DashboardNavigation";
 import BasicQuizForm from "@/components/Forms/BasicQuizForm";
 import TimeQuizForm from "@/components/Forms/TimeQuizForm";
-import Overview from "@/components/Overview";
+import Overview from "@/components/Forms/Overview";
 import QuestionManager from "@/components/Forms/QuestionManager";
 import { redirect } from "next/navigation";
+import QuizResponseTable from "@/components/Forms/QuizResponseTable";
 
 // type IQuiz = {};
 
@@ -128,7 +129,9 @@ export default async function QuizConfigPage({
               isLive={quizData.status === "live"}
             />
           </TabsContent>
-          <TabsContent className="" value="responses"></TabsContent>
+          <TabsContent className="" value="responses">
+            <QuizResponseTable responses={quizData.responses} />
+          </TabsContent>
         </div>
       </Tabs>
     </div>

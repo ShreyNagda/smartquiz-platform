@@ -1,10 +1,10 @@
 "use client";
 
 import React from "react";
-import { Card, CardContent } from "./ui/card";
-import { Button } from "./ui/button";
+import { Card, CardContent } from "../ui/card";
+import { Button } from "../ui/button";
 import { useQRCode } from "next-qrcode";
-import DownloadTestSheetButton from "./Buttons/DownloadTestSheetButton";
+import DownloadTestSheetButton from "../Buttons/DownloadTestSheetButton";
 import { IQuiz } from "@/models/Quiz";
 import { BsShare } from "react-icons/bs";
 

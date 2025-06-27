@@ -89,33 +89,50 @@ export default function QuestionManager({
   }, [initialQuestions, questions]);
 
   return (
-    <div className="flex flex-col items-start p-2">
+    <div className="flex flex-col items-start ">
       <div className="w-full flex  md:flex-row justify-between items-center">
         <div className="text-lg my-2 font-semibold">Question Manager</div>
-        <Popover>
-          <PopoverTrigger asChild className="px-0">
-            <Button className="rounded-xs flex items-center gap-2 bg-background hover:bg-background/90">
-              Add Question
-              <ChevronDown className="h-4 w-4" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent
-            className="p-2 w-60 shadow-lg space-y-2 rounded-xs"
-            align="end"
-          >
-            <QuestionDialog handleAddQuestion={handleAddQuestion}>
-              <Button
-                variant="ghost"
-                className="w-full justify-start rounded-sm"
-              >
-                <FaPlus /> New Question
+        {isLive ? (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button className="rounded-xs flex items-center gap-2 bg-gray-500 hover:bg-gray-500/90">
+                Add Question
+                <FaInfoCircle />
               </Button>
-            </QuestionDialog>
-
-            <GenerateFromFileDialog />
-            <GenerateUsingAiDialog />
-          </PopoverContent>
-        </Popover>
+            </TooltipTrigger>
+            <TooltipContent className="bg-red-400">
+              Quiz is live. No questions can be added.
+            </TooltipContent>
+          </Tooltip>
+        ) : (
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button className="rounded-xs flex items-center gap-2 bg-background hover:bg-background/90">
+                Add Question
+                <ChevronDown />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent
+              className="p-2 w-60 shadow-lg space-y-2 rounded-xs"
+              align="end"
+            >
+              <QuestionDialog handleAddQuestion={handleAddQuestion}>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start rounded-sm"
+                >
+                  <FaPlus /> New Question
+                </Button>
+              </QuestionDialog>
+              <GenerateFromFileDialog
+                onImport={(imported) => {
+                  imported.forEach((q) => handleAddQuestion(q));
+                }}
+              />
+              <GenerateUsingAiDialog />
+            </PopoverContent>
+          </Popover>
+        )}
       </div>
 
       <div className="space-y-2 w-full">

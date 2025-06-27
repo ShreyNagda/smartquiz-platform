@@ -1,0 +1,25 @@
+[
+  {
+    "qid": "q1",
+    "text": "What is the capital of France?",
+    "type": "single",
+    "options": ["Paris", "London", "Berlin", "Rome"],
+    "correct": "Paris",
+    "marks": 1
+  },
+  {
+    "qid": "q2",
+    "text": "Select the prime numbers.",
+    "type": "multiple",
+    "options": ["2", "3", "4", "6"],
+    "correct": ["2", "3"],
+    "marks": 2
+  },
+  {
+    "qid": "q3",
+    "text": "Explain the theory of relativity.",
+    "type": "short",
+    "correct": "Gravity is a fundamental force of attraction between all objects with mass",
+    "marks": 5
+  }
+]
