@@ -102,6 +102,7 @@ export async function POST(req: NextRequest) {
       answers,
       score: totalScore,
       maxScore: maxScore,
+      submittedAt: new Date().toISOString(),
     };
 
     await Quiz.findByIdAndUpdate(quizId, {

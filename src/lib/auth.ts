@@ -22,7 +22,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           }));
 
         token.id = existingUser._id.toString();
-        console.log("Token from auth.ts", token);
       }
       return token;
     },

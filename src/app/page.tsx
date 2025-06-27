@@ -160,15 +160,13 @@ export default function Home() {
               get detailed reports in Excel and PDF formats.
             </p>
             <div className="flex flex-col md:flex-row gap-4 justify-center items-center max-w-[650px] mx-auto">
-              <Button
-                className="h-[60px] flex-1 w-full p-4 rounded-lg md:rounded-xl text-lg font-semibold"
-                asChild
-              >
-                <LoginButton>Start Creating Quizzes</LoginButton>
-              </Button>
+              <LoginButton className="min-w-[300px] py-4 h-[50px] hover:bg-primary/60">
+                Start Creating Quizzes
+              </LoginButton>
+
               <Button
                 variant={"outline"}
-                className="w-full flex-1 text-foreground p-4 rounded-xl text-lg font-semibold hover:border-primary hover:text-primary transition-all"
+                className="min-w-[300px] border-[1.5px] text-foreground text-lg font-semibold hover:border-primary hover:text-primary transition-all"
               >
                 Watch Demo
               </Button>
@@ -306,7 +304,7 @@ export default function Home() {
       </section>
 
       {/* Benefits Section */}
-      <section className="mx-2 md:mx-10 py-20 bg-gradient-to-r from-primary/40 to-secondary text-white rounded-md shadow-2xl">
+      <section className="mx-2 md:mx-10 py-20 bg-gradient-to-r from-primary/10 to-secondary text-white rounded-md shadow-2xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">
@@ -330,7 +328,7 @@ export default function Home() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-20 bg-background">
+      <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-foreground mb-4">
@@ -371,7 +369,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-20 bg-foreground/80 text-background">
+      <section className="py-20 bg-foreground/70 text-background">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
             Ready to Transform Your Teaching?
@@ -381,7 +379,7 @@ export default function Home() {
             effective assessments. Start creating your first quiz in minutes.
           </p>
           <Button
-            className="h-[60px] p-4 rounded-lg md:rounded-xl text-lg font-semibold bg-background hover:bg-background/90"
+            className="h-[50px] min-w-[300px] p-4 rounded-lg md:rounded-xl text-lg font-semibold bg-background hover:bg-background/90"
             asChild
           >
             <LoginButton>

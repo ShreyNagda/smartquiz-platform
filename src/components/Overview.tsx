@@ -2,24 +2,19 @@
 
 import React from "react";
 import { Card, CardContent } from "./ui/card";
-import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { Button } from "./ui/button";
-import { BsPrinter } from "react-icons/bs";
-import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
-
 import { useQRCode } from "next-qrcode";
+import DownloadTestSheetButton from "./Buttons/DownloadTestSheetButton";
+import { IQuiz } from "@/models/Quiz";
+import { BsShare } from "react-icons/bs";
 
-type OverviewData = {
+type Quiz = {
   numberOfQuestions: number;
   numberOfResponses: number;
-  accessMode: string;
-  access: string;
-  code?: string;
-  id: string;
+  quiz: IQuiz;
 };
 
-export default function Overview(overviewData: OverviewData) {
+export default function Overview({ quiz, ...overviewData }: Quiz) {
   const data = [
     { title: "Questions", value: overviewData.numberOfQuestions },
     { title: "Responses", value: overviewData.numberOfResponses },
@@ -28,67 +23,70 @@ export default function Overview(overviewData: OverviewData) {
   const { SVG } = useQRCode();
 
   return (
-    <>
+    <section className="w-full rounded-2xl space-y-2">
+      {/* Header */}
       <div className="flex justify-between items-center">
-        <div className="text-lg font-semibold my-2">Overview</div>
-
+        <h2 className="text-xl font-semibold text-gray-800">Overview</h2>
         <div className="flex items-center gap-2 text-primary">
-          {/* <div className="capitalize">{quizData.status}</div> */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              {/* TODO implement the print button */}
-              <Button type="button" variant={"link"} size={"icon"} disabled>
-                <Link href={`/quiz/${overviewData.id}?preview=true`}>
-                  <ArrowUpRight />
-                </Link>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Preview</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              {/* TODO implement the print button */}
-              <Button type="button" variant={"link"} size={"icon"} disabled>
-                <BsPrinter />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Print</TooltipContent>
-          </Tooltip>
+          <Button variant={"ghost"}>
+            <BsShare />
+          </Button>
+
+          <DownloadTestSheetButton quiz={quiz} />
         </div>
       </div>
-      {/* <div>Title</div> */}
-      <div className="flex justify-start items-center flex-col md:flex-row gap-2 md:gap-4">
-        <div className="flex gap-2 flex-col order-2 md:order-none">
-          <div className="flex items-center justify-center md:justify-start gap-1">
-            {data.map((d) => (
-              <Card key={d.title} className="px-3 py-2">
-                <CardContent className="px-0 flex flex-col justify-between items-center ">
-                  <div className="text-sm">{d.title}</div>
-                  <div className="md:text-xl">{d.value}</div>
+
+      {/* Stats + QR */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+        {/* Stats */}
+        <div className="col-span-2 flex flex-col gap-4">
+          <div className="flex gap-4">
+            {data.map((item) => (
+              <Card key={item.title} className="flex-1">
+                <CardContent className="py-4 px-2 flex flex-col items-center justify-center">
+                  <div className="text-sm text-gray-400">{item.title}</div>
+                  <div className="text-xl font-bold text-gray-300">
+                    {item.value}
+                  </div>
                 </CardContent>
               </Card>
             ))}
           </div>
-          <p className="capitalize mt-2 px-2">
-            Access Mode: {overviewData.accessMode}
-          </p>
-          {overviewData.accessMode === "private" && (
-            <p className="px-2">Code: {overviewData.code!}</p>
-          )}
+
+          <div className="px-2 space-y-1">
+            <p className="capitalize text-sm text-gray-600">
+              Access Mode:{" "}
+              <span className="font-medium text-gray-800">
+                {quiz.accessMode}
+              </span>
+            </p>
+            {quiz.accessMode === "private" && (
+              <p className="text-sm text-gray-600">
+                Code:{" "}
+                <span className="font-mono text-gray-800">{quiz.code}</span>
+              </p>
+            )}
+          </div>
         </div>
-        <div className="order-1 md:order-none">
+
+        {/* QR Code */}
+        <div className="flex justify-center items-center">
           <SVG
-            text={overviewData.access}
+            text={
+              quiz.access ||
+              `${process.env.NEXT_PUBLIC_BASE_URL}/quiz/${quiz._id}`
+            }
             options={{
               margin: 2,
-              width: 200,
+              width: 180,
               color: {
-                dark: "#000",
+                dark: "#000000",
+                light: "#ffffff00",
               },
             }}
           />
         </div>
       </div>
-    </>
+    </section>
   );
 }

@@ -16,7 +16,9 @@ export default function Header({ session }: Props) {
 
   const showLoginButton = !session;
   const showDashboardButton: boolean =
-    session !== null && !pathName.includes("/dashboard");
+    session !== null &&
+    !pathName.includes("/dashboard") &&
+    !pathName.startsWith("/quiz");
   const showLogoutButton = session && pathName.includes("/dashboard");
   return (
     <header className="flex items-center justify-between md:p-8 p-3">

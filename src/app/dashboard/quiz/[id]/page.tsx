@@ -89,10 +89,7 @@ export default async function QuizConfigPage({
             <Overview
               numberOfQuestions={quizData.questions.length || 0}
               numberOfResponses={quizData.responses.length || 0}
-              accessMode={quizData.accessMode}
-              access={quizData.access || ""}
-              code={quizData.code || ""}
-              id={id}
+              quiz={quizData}
             />
           </TabsContent>
           <TabsContent value="basic" className="p-3">

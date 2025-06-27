@@ -16,6 +16,7 @@ export interface IQuiz {
     answers: { qid: string; answer: string | string[] };
     score: number;
     maxScore: number;
+    submittedAt: Date;
   }[];
   questions: {
     qid: string;
@@ -66,6 +67,7 @@ const quizSchema = new Schema<IQuiz>(
         answers: [{ qid: String, answer: Schema.Types.Mixed }],
         score: Number,
         maxScore: Number,
+        submittedAt: Date,
       },
     ],
     questions: [

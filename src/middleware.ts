@@ -12,7 +12,6 @@ export async function middleware(request: NextRequest) {
         ? "__Secure-authjs.session-token"
         : "authjs.session-token",
   });
-  console.log(`token from middleware ${token}`);
 
   if (!token?.id) {
     // Not authenticated, redirect to sign-in or error page

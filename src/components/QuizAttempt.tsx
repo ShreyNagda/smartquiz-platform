@@ -17,9 +17,8 @@ import { Button } from "@/components/ui/button";
 import { IQuiz } from "@/models/Quiz";
 import { LuLoaderCircle } from "react-icons/lu";
 
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
 import { useRouter } from "next/navigation";
+import DownloadResponsePDFButton from "./Buttons/DownloadResponseButton";
 
 type UserData = {
   name: string;
@@ -89,61 +88,6 @@ export default function QuizAttempt({
     [answers, quizData._id, userData]
   );
 
-  function generatePDF({
-    score,
-    maxScore,
-    quizData,
-    userData,
-    answers,
-  }: {
-    score: number;
-    maxScore: number;
-    quizData: {
-      title: string;
-      questions: { qid: string; text: string }[];
-    };
-    userData: {
-      name: string;
-      details?: {
-        id: string;
-        class?: string;
-      };
-    };
-    answers: {
-      qid: string;
-      index: number;
-      answer: string | string[];
-    }[];
-  }) {
-    const doc = new jsPDF();
-    const questions = quizData.questions;
-
-    // Header
-    doc.setFontSize(16);
-    doc.text(quizData.title, 105, 20, { align: "center" });
-
-    doc.setFontSize(12);
-    doc.text(`Name: ${userData.name}`, 14, 30);
-    if (userData.details?.class)
-      doc.text(`Class: ${userData.details.class}`, 14, 37);
-    if (userData.details?.id) doc.text(`ID: ${userData.details.id}`, 14, 44);
-
-    doc.text(`Score: ${score} / ${maxScore}`, 14, 55);
-
-    // Table of Answers
-    autoTable(doc, {
-      startY: 65,
-      head: [["Q#", "Question", "Answer"]],
-      body: answers.map((a, i) => [
-        i + 1,
-        questions.find((q) => q.qid === a.qid)?.text || "N/A",
-        Array.isArray(a.answer) ? a.answer.join(", ") : a.answer,
-      ]),
-    });
-
-    doc.save(`${userData.name}_quiz_result.pdf`);
-  }
-
   useEffect(() => {
     if (submitted?.isSubmitted) return;
 
@@ -175,7 +119,7 @@ export default function QuizAttempt({
 
   if (!questions?.length) {
     return (
-      <div className="h-screen flex items-center justify-center">
+      <div className="flex items-center justify-center">
         <LuLoaderCircle className="animate-spin text-2xl" />
       </div>
     );
@@ -183,7 +127,7 @@ export default function QuizAttempt({
 
   if (submitted?.isSubmitted && response) {
     return (
-      <div className="h-screen flex flex-col items-center justify-center gap-2 text-center p-4">
+      <div className="flex flex-col items-center justify-center gap-2 text-center p-4">
         <h2 className="text-xl font-semibold">Quiz Submitted!</h2>
         {submitted.reason && (
           <p className="text-sm mt-2 text-muted-foreground">
@@ -199,19 +143,13 @@ export default function QuizAttempt({
         <div>
           {response.score} / {response.maxScore}
         </div>
-        <Button
-          onClick={() =>
-            generatePDF({
-              score: response.score,
-              maxScore: response.maxScore,
-              quizData,
-              userData,
-              answers,
-            })
-          }
-        >
-          Download Response as PDF
-        </Button>
+        <DownloadResponsePDFButton
+          quiz={quizData}
+          score={response.score}
+          maxScore={response.maxScore}
+          user={userData}
+          answers={answers}
+        />
         <Button variant={"secondary"} onClick={() => router.replace("/")}>
           Back to Home
         </Button>
@@ -220,7 +158,7 @@ export default function QuizAttempt({
   }
 
   return (
-    <section className="h-svh w-full flex flex-col">
+    <section className="w-full flex flex-col">
       <h2 className="text-xl text-center font-semibold py-4">
         {quizData.title}
       </h2>

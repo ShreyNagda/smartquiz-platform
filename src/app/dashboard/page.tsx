@@ -1,6 +1,6 @@
 // import QuizCard from "@/components/QuizCard";
 
-import QuizCard from "@/components/QuizCard";
+import DashboardQuizCard from "@/components/DashboardQuizCard";
 import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
 import dbConnect from "@/lib/db";
@@ -37,7 +37,7 @@ export default async function DashboardPage() {
       {quizzes && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 py-5">
           {serializableQuizzes.map((q: IQuiz) => {
-            return <QuizCard key={q._id} q={q} />;
+            return <DashboardQuizCard key={q._id} q={q} />;
           })}
         </div>
       )}

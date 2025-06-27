@@ -21,13 +21,13 @@ interface IQuizCard {
   status: string;
 }
 
-export default function QuizCard({ q }: { q: IQuizCard }) {
+export default function DashboardQuizCard({ q }: { q: IQuizCard }) {
   return (
     <Link href={`/dashboard/quiz/${q._id}`}>
-      <Card className="bg-card">
+      <Card className="bg-card gap-4 sm:max-w-[400px]">
         <CardHeader>
-          <CardTitle className="flex justify-between">
-            {q.title}
+          <CardTitle className="flex items-center justify-between">
+            <div className="text-lg md:text-xl font-semibold ">{q.title}</div>
             {q.questions.length === 0 && (
               <Tooltip>
                 <TooltipTrigger className="text-primary">
@@ -39,7 +39,6 @@ export default function QuizCard({ q }: { q: IQuizCard }) {
               </Tooltip>
             )}
           </CardTitle>
-          {/* <CardDescription>{q.desc}</CardDescription> */}
         </CardHeader>
         <CardContent className="flex flex-wrap justify-between items-center">
           <div>Questions: {q.questions.length}</div>
