@@ -72,10 +72,7 @@ export default function Overview({ quiz, ...overviewData }: Quiz) {
         {/* QR Code */}
         <div className="flex justify-center items-center">
           <SVG
-            text={
-              quiz.access ||
-              `${process.env.NEXT_PUBLIC_BASE_URL}/quiz/${quiz._id}`
-            }
+            text={`${process.env.NEXT_PUBLIC_BASE_URL}/quiz/${quiz._id}`}
             options={{
               margin: 2,
               width: 180,
